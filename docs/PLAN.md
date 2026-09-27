@@ -46,7 +46,7 @@ Vấn đề đã biết (được xử lý trong các task bên dưới):
 | P0-02 | Sinh kiểu database, bỏ `any`                   | P0-01         | [x]  |
 | P0-03 | ESLint, Prettier, script kiểm tra              | —             | [x]  |
 | P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright        | P0-01, P0-03  | [x]  |
-| P0-05 | CI GitHub Actions                              | P0-04         | [ ]  |
+| P0-05 | CI GitHub Actions                              | P0-04         | [x]  |
 | P0-06 | Áp dụng template UI **[Hỏi trước]**            | —             | [x]  |
 | P1-01 | Báo lỗi trên form bằng `useActionState` + zod  | P0-02         | [ ]  |
 | P1-02 | Xác nhận email, quên mật khẩu, trang tài khoản | P1-01         | [ ]  |
@@ -518,3 +518,13 @@ db:reset/db:types/test:db`. README có mục "Phát triển local"; mục cloud 
     Khi viết test e2e, tên người dùng và nút đăng xuất có **hai** bản trong DOM (cột trái và thanh trên đỉnh);
     `getByRole` tự lọc bản đang ẩn nhưng `getByText` thì không, phải chỉ rõ vùng.
     Chưa có trang nào dùng `dark:` — nếu cần thì biến thể đã cấu hình sẵn là `&:where([data-theme="dark"] *)`.
+
+- 2026-09-28 — P0-05 (tiếp) — Đã nối repo với https://github.com/hynu15/web_tieng_trung và đẩy 8 commit lên.
+  Nhánh local lúc `git init` tên `master`, đã đổi thành `main` cho khớp `on.push.branches` trong workflow.
+  **CI xanh cả hai job** ngay lượt đầu trên runner sạch: `npm ci` → `npm run check` → `npm run build`, và
+  `supabase start` → `supabase test db` (40 test) → `playwright install` → `npm run test:e2e` (14 test).
+  Lượt chạy: https://github.com/hynu15/web_tieng_trung/actions/runs/36340598945
+  _Lưu ý:_ xác minh bằng lượt push lên `main` chứ chưa qua một PR thử, nên nhánh kích hoạt `pull_request`
+  chưa chạy lần nào — cùng workflow, cùng job, chỉ khác dòng khai sự kiện.
+  _Ghi chú cho task sau:_ job e2e mất khoảng 4 phút. Nếu về sau chậm quá thì cache
+  `~/.cache/ms-playwright` và tách e2e sang workflow chạy theo lịch.
