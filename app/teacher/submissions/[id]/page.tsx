@@ -145,6 +145,7 @@ export default async function GradePage({ params }: { params: Promise<{ id: stri
           <h2 className="text-base">Nhận xét chung</h2>
           <textarea
             name="teacher_comment"
+            aria-label="Nhận xét chung"
             rows={3}
             defaultValue={s.teacher_comment ?? ''}
             className="field border-seal/40 text-seal focus:border-seal focus:ring-seal/20"

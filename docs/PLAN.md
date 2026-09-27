@@ -45,7 +45,7 @@ Vấn đề đã biết (được xử lý trong các task bên dưới):
 | P0-01 | Supabase local + migrations + seed             | —             | [x]  |
 | P0-02 | Sinh kiểu database, bỏ `any`                   | P0-01         | [x]  |
 | P0-03 | ESLint, Prettier, script kiểm tra              | —             | [x]  |
-| P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright        | P0-01, P0-03  | [ ]  |
+| P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright        | P0-01, P0-03  | [x]  |
 | P0-05 | CI GitHub Actions                              | P0-04         | [ ]  |
 | P0-06 | Áp dụng template UI **[Hỏi trước]**            | —             | [ ]  |
 | P1-01 | Báo lỗi trên form bằng `useActionState` + zod  | P0-02         | [ ]  |
@@ -462,3 +462,25 @@ db:reset/db:types/test:db`. README có mục "Phát triển local"; mục cloud 
   `vitest run --passWithNoTests`; P0-04 thay bằng test thật. `npm run build` và `npm run dev` dùng chung thư
   mục `.next` — chạy build trong lúc dev server đang mở sẽ làm dev server lỗi "Cannot find module
   ./vendor-chunks/...", phải tắt dev server hoặc xoá `.next` rồi bật lại.
+
+- 2026-09-28 — P0-04 — Ba lớp test đã chạy được: **Vitest** 29 test (`vitest.config.mts`, `lib/format.test.ts`,
+  `lib/types.test.ts`) cho `vnLocalToIso`/`isoToVnLocal` hai chiều, `youtubeEmbed` 4 dạng link, `isOverdue`,
+  `isLate`, `fileExt`, `questionOptions`. **pgTAP** 40 test trong `supabase/tests/` (`rls.test.sql`,
+  `submit_assignment.test.sql`, `storage.test.sql`): mỗi file tự dựng dữ liệu trong transaction rồi rollback
+  nên không phụ thuộc `seed.sql`. **Playwright** 14 test (`e2e/`), `globalSetup` chạy `supabase db reset`
+  trước mỗi lượt. Scripts mới: `test:e2e`.
+  Ghi chú kỹ thuật gặp phải:
+  - Postgres không cho CTE sửa dữ liệu nằm trong subquery → dùng `pg_temp.dem_dong_doi_duoc()` để đếm số dòng
+    một câu UPDATE thực sự đổi được (RLS lọc bớt thì ra 0).
+  - Trong pgTAP không insert `submissions` kèm cột `id` dưới vai học viên được, vì
+    `grant insert (assignment_id, student_id)` không bao gồm `id`. Dữ liệu dựng sẵn phải tạo dưới quyền admin.
+  - Playwright biên dịch sang CommonJS nên `import.meta.url` lỗi; dùng `path.resolve` từ thư mục gốc.
+  - Micro giả (`--use-fake-device-for-media-stream` + `permissions: ['microphone']`) ghi âm thật được,
+    câu hỏi dạng speaking test được trọn vẹn.
+  - `supabase db reset` ngay sau `supabase start` đôi khi lỗi `HealthCheckTimeoutError` do container storage
+    chưa healthy → `globalSetup` thử lại một lần sau 15 giây.
+  - Thêm `aria-label="Nhận xét chung"` cho textarea nhận xét của giáo viên: trước đó ô này chỉ có heading
+    phía trên nên trình đọc màn hình không đọc được tên ô.
+    _Ghi chú cho task sau:_ các file e2e dùng chung một database và chạy tuần tự (`workers: 1`), nên đừng viết
+    khẳng định kiểu "danh sách rỗng" — file khác có thể để lại dữ liệu. `e2e/fixtures/bai-viet-tay.png` là ảnh
+    mẫu nhỏ; P1-03 cần thêm ảnh ~5 MB để test nén ảnh.
