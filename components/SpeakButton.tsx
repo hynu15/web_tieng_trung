@@ -11,7 +11,12 @@ export function SpeakButton({ text }: { text: string }) {
     window.speechSynthesis.speak(u);
   }
   return (
-    <button type="button" onClick={speak} className="btn-ghost px-2 py-1 text-xs" aria-label={`Nghe ${text}`}>
+    <button
+      type="button"
+      onClick={speak}
+      className="btn-ghost px-2 py-1 text-xs"
+      aria-label={`Nghe ${text}`}
+    >
       ▶ Nghe
     </button>
   );

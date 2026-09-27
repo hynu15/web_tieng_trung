@@ -31,6 +31,7 @@ npx supabase gen types typescript --local > lib/database.types.ts
 ## Quy tắc bắt buộc
 
 **Bảo mật**
+
 - RLS là lớp phân quyền thật. Mọi bảng mới phải `enable row level security` và có policy trong cùng migration, kèm test pgTAP.
 - Không bao giờ dùng `SUPABASE_SERVICE_ROLE_KEY` ngoài route cron phía server; không đặt nó trong biến `NEXT_PUBLIC_*`.
 - Mọi server action bắt đầu bằng `requireRole('teacher' | 'student')`. Không tin `id` gửi từ client: để RLS lọc, và kiểm tra quyền sở hữu khi cần.
@@ -38,11 +39,13 @@ npx supabase gen types typescript --local > lib/database.types.ts
 - Học viên không được ghi `score`, `status`, `role`, `auto_score`. Thay đổi trạng thái bài làm đi qua hàm SQL `security definer`.
 
 **Database**
+
 - Thay đổi schema = tạo file migration mới `supabase/migrations/<timestamp>_<ten>.sql`. Không sửa migration đã có.
 - Sau migration: chạy `db reset`, `gen types`, `test db`.
 - `alter type ... add value` phải nằm trong migration riêng (không dùng giá trị mới trong cùng transaction).
 
 **Code**
+
 - Dùng kiểu từ `lib/database.types.ts`; không thêm `any` mới (sau task P0-02).
 - Server action trả `{ error?: string }` và form dùng `useActionState` để hiển thị lỗi (sau task P1-01). Không `throw` cho lỗi người dùng.
 - File người dùng tải lên đi thẳng từ trình duyệt lên Storage (sau task P1-03), server action chỉ nhận `path`.
@@ -50,6 +53,7 @@ npx supabase gen types typescript --local > lib/database.types.ts
 - Không thêm thư viện nếu vài chục dòng code tự viết là đủ. Thư viện mới phải ghi lý do trong mô tả commit.
 
 **Giao diện**
+
 - Chỉ dùng token trong `tailwind.config.ts` (`paper, ink, muted, line, jade, seal`) và class trong `app/globals.css` (`btn-*`, `field`, `panel`, `rows`, `red-ink`, `tag-*`). Không viết mã màu hex trong component.
 - Đỏ `seal` chỉ dành cho lời chữa của giáo viên, lỗi, quá hạn. Thao tác chính dùng `jade`.
 - Chữ Hán: `font-hanzi` và `lang="zh-CN"`. Ô 田字格 dùng `components/Tianzige.tsx`.

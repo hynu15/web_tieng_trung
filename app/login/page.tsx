@@ -17,7 +17,8 @@ export default async function LoginPage({ searchParams }: Props) {
           Bài giảng, bài tập và lời chữa của giáo viên, ở cùng một chỗ.
         </h1>
         <p className="mt-3 max-w-md text-muted">
-          Học viên vào lớp bằng mã do giáo viên gửi. Bài viết tay chụp ảnh nộp, bài nói ghi âm ngay trên điện thoại.
+          Học viên vào lớp bằng mã do giáo viên gửi. Bài viết tay chụp ảnh nộp, bài nói ghi âm ngay
+          trên điện thoại.
         </p>
       </section>
 
@@ -25,24 +26,50 @@ export default async function LoginPage({ searchParams }: Props) {
         <h2 className="mb-5">{isSignup ? 'Tạo tài khoản học viên' : 'Đăng nhập'}</h2>
 
         {error && <p className="red-ink mb-4">{error}</p>}
-        {message && <p className="mb-4 rounded-md bg-jade-soft px-3 py-2 text-sm text-jade-dark">{message}</p>}
+        {message && (
+          <p className="mb-4 rounded-md bg-jade-soft px-3 py-2 text-sm text-jade-dark">{message}</p>
+        )}
 
         <form action={isSignup ? signup : login} className="space-y-4">
           {isSignup && (
             <div>
-              <label className="label" htmlFor="full_name">Họ và tên</label>
-              <input id="full_name" name="full_name" required className="field" autoComplete="name" />
+              <label className="label" htmlFor="full_name">
+                Họ và tên
+              </label>
+              <input
+                id="full_name"
+                name="full_name"
+                required
+                className="field"
+                autoComplete="name"
+              />
             </div>
           )}
           <div>
-            <label className="label" htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" required className="field" autoComplete="email" />
+            <label className="label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className="field"
+              autoComplete="email"
+            />
           </div>
           <div>
-            <label className="label" htmlFor="password">Mật khẩu</label>
+            <label className="label" htmlFor="password">
+              Mật khẩu
+            </label>
             <input
-              id="password" name="password" type="password" required minLength={isSignup ? 8 : undefined}
-              className="field" autoComplete={isSignup ? 'new-password' : 'current-password'}
+              id="password"
+              name="password"
+              type="password"
+              required
+              minLength={isSignup ? 8 : undefined}
+              className="field"
+              autoComplete={isSignup ? 'new-password' : 'current-password'}
             />
           </div>
           <SubmitButton className="btn-primary w-full" pendingText="Đang xử lý…">
@@ -52,9 +79,19 @@ export default async function LoginPage({ searchParams }: Props) {
 
         <p className="mt-5 text-sm text-muted">
           {isSignup ? (
-            <>Đã có tài khoản? <Link href="/login" className="text-jade underline">Đăng nhập</Link></>
+            <>
+              Đã có tài khoản?{' '}
+              <Link href="/login" className="text-jade underline">
+                Đăng nhập
+              </Link>
+            </>
           ) : (
-            <>Học viên mới? <Link href="/login?mode=signup" className="text-jade underline">Tạo tài khoản</Link></>
+            <>
+              Học viên mới?{' '}
+              <Link href="/login?mode=signup" className="text-jade underline">
+                Tạo tài khoản
+              </Link>
+            </>
           )}
         </p>
       </section>

@@ -1,7 +1,11 @@
 import type { QuestionType } from './types';
 
 const dateFmt = new Intl.DateTimeFormat('vi-VN', {
-  weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+  weekday: 'short',
+  day: '2-digit',
+  month: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
   timeZone: 'Asia/Ho_Chi_Minh',
 });
 

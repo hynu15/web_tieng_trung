@@ -8,8 +8,12 @@ export default async function AssignmentsPage() {
   const { supabase } = await requireRole('teacher');
   const [{ data: classes }, { data: lessons }, { data: assignments }] = await Promise.all([
     supabase.from('classes').select('id, name').order('created_at'),
-    supabase.from('lessons').select('id, title, class_id').order('created_at', { ascending: false }),
-    supabase.from('assignments')
+    supabase
+      .from('lessons')
+      .select('id, title, class_id')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('assignments')
       .select('id, title, due_at, published, class:classes(name), submissions(status)')
       .order('created_at', { ascending: false }),
   ]);
@@ -25,7 +29,10 @@ export default async function AssignmentsPage() {
               const turnedIn = a.submissions.filter((s) => s.status !== 'draft').length;
               return (
                 <li key={a.id}>
-                  <Link href={`/teacher/assignments/${a.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-paper">
+                  <Link
+                    href={`/teacher/assignments/${a.id}`}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-paper"
+                  >
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium">{a.title}</p>
                       <p className="text-sm text-muted">
@@ -51,28 +58,52 @@ export default async function AssignmentsPage() {
         ) : (
           <>
             <div>
-              <label className="label" htmlFor="class_id">Lớp</label>
+              <label className="label" htmlFor="class_id">
+                Lớp
+              </label>
               <select id="class_id" name="class_id" className="field">
-                {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="label" htmlFor="lesson_id">Gắn với bài giảng</label>
+              <label className="label" htmlFor="lesson_id">
+                Gắn với bài giảng
+              </label>
               <select id="lesson_id" name="lesson_id" className="field" defaultValue="">
                 <option value="">Không gắn</option>
-                {lessons?.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}
+                {lessons?.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.title}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="label" htmlFor="title">Tên bài tập</label>
-              <input id="title" name="title" required className="field" placeholder="Luyện tập bài 3" />
+              <label className="label" htmlFor="title">
+                Tên bài tập
+              </label>
+              <input
+                id="title"
+                name="title"
+                required
+                className="field"
+                placeholder="Luyện tập bài 3"
+              />
             </div>
             <div>
-              <label className="label" htmlFor="instructions">Hướng dẫn</label>
+              <label className="label" htmlFor="instructions">
+                Hướng dẫn
+              </label>
               <textarea id="instructions" name="instructions" rows={3} className="field" />
             </div>
             <div>
-              <label className="label" htmlFor="due_at">Hạn nộp (giờ Việt Nam)</label>
+              <label className="label" htmlFor="due_at">
+                Hạn nộp (giờ Việt Nam)
+              </label>
               <input id="due_at" name="due_at" type="datetime-local" className="field" />
             </div>
             <SubmitButton pendingText="Đang tạo…">Tạo và thêm câu hỏi</SubmitButton>

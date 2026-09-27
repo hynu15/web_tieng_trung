@@ -8,7 +8,10 @@ import { isRealFile, uploadFile } from '@/lib/storage';
 export async function joinClass(fd: FormData) {
   const { supabase } = await requireRole('student');
   const { error } = await supabase.rpc('join_class', { code: String(fd.get('code') ?? '') });
-  if (error) redirect(`/student?error=${encodeURIComponent('Mã lớp không đúng. Kiểm tra lại với giáo viên.')}`);
+  if (error)
+    redirect(
+      `/student?error=${encodeURIComponent('Mã lớp không đúng. Kiểm tra lại với giáo viên.')}`,
+    );
   revalidatePath('/student');
   redirect('/student');
 }
@@ -45,13 +48,17 @@ export async function submitAssignment(assignmentId: string, fd: FormData) {
   for (const q of a.questions as { id: string; type: string }[]) {
     const text = String(fd.get(`q_${q.id}`) ?? '').trim();
     const file = fd.get(`f_${q.id}`);
-    const file_path = isRealFile(file) ? await uploadFile(supabase, 'submissions', folder, file) : null;
+    const file_path = isRealFile(file)
+      ? await uploadFile(supabase, 'submissions', folder, file)
+      : null;
     if (!text && !file_path) continue;
     rows.push({ submission_id: sub!.id, question_id: q.id, text_answer: text || null, file_path });
   }
 
   if (rows.length) {
-    const { error } = await supabase.from('submission_answers').upsert(rows, { onConflict: 'submission_id,question_id' });
+    const { error } = await supabase
+      .from('submission_answers')
+      .upsert(rows, { onConflict: 'submission_id,question_id' });
     if (error) throw new Error(error.message);
   }
 

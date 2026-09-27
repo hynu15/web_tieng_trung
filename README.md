@@ -31,23 +31,23 @@ Rồi `npm run dev` và mở http://localhost:3000.
 
 **Tài khoản mẫu** (mật khẩu chung `Test12345!`, tạo bởi `supabase/seed.sql`):
 
-| Email | Vai trò | Có gì |
-|---|---|---|
+| Email                 | Vai trò   | Có gì                                |
+| --------------------- | --------- | ------------------------------------ |
 | `giaovien@test.local` | giáo viên | lớp `DEMO01`, 2 bài giảng, 1 bài tập |
-| `hv1@test.local` | học viên | đã trong lớp `DEMO01` |
-| `hv2@test.local` | học viên | đã trong lớp `DEMO01` |
-| `hv3@test.local` | học viên | đã trong lớp `DEMO01` |
+| `hv1@test.local`      | học viên  | đã trong lớp `DEMO01`                |
+| `hv2@test.local`      | học viên  | đã trong lớp `DEMO01`                |
+| `hv3@test.local`      | học viên  | đã trong lớp `DEMO01`                |
 
 Học viên chỉ thấy bài giảng đã đăng (1 trong 2) và bài tập đã giao. Mã vào lớp là `DEMO01`.
 
 **Các cổng local**
 
-| Dịch vụ | Địa chỉ |
-|---|---|
-| API | http://127.0.0.1:54321 |
-| Studio (xem/sửa dữ liệu) | http://127.0.0.1:54323 |
-| Postgres | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
-| Mailpit (xem email gửi ra) | http://127.0.0.1:54324 |
+| Dịch vụ                    | Địa chỉ                                                   |
+| -------------------------- | --------------------------------------------------------- |
+| API                        | http://127.0.0.1:54321                                    |
+| Studio (xem/sửa dữ liệu)   | http://127.0.0.1:54323                                    |
+| Postgres                   | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
+| Mailpit (xem email gửi ra) | http://127.0.0.1:54324                                    |
 
 Xác nhận email đã tắt ở local (`enable_confirmations = false` trong `supabase/config.toml`),
 nên đăng ký xong là đăng nhập được ngay.

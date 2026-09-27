@@ -19,7 +19,8 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient();
   const password = String(formData.get('password'));
-  if (password.length < 8) redirect(`/login?mode=signup&error=${q('Mật khẩu cần ít nhất 8 ký tự.')}`);
+  if (password.length < 8)
+    redirect(`/login?mode=signup&error=${q('Mật khẩu cần ít nhất 8 ký tự.')}`);
 
   const { data, error } = await supabase.auth.signUp({
     email: String(formData.get('email')),

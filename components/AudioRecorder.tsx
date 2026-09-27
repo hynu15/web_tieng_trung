@@ -17,7 +17,12 @@ export function AudioRecorder({ name, label = 'Ghi âm' }: { name: string; label
     return () => clearInterval(t);
   }, [state]);
 
-  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
+  useEffect(
+    () => () => {
+      if (url) URL.revokeObjectURL(url);
+    },
+    [url],
+  );
 
   async function start() {
     try {
@@ -65,7 +70,9 @@ export function AudioRecorder({ name, label = 'Ghi âm' }: { name: string; label
         {url && <audio src={url} controls className="h-9 max-w-full" />}
       </div>
       {state === 'error' && (
-        <p className="text-sm text-seal">Trình duyệt chưa cho dùng micro. Cho phép micro trong cài đặt trang rồi thử lại.</p>
+        <p className="text-sm text-seal">
+          Trình duyệt chưa cho dùng micro. Cho phép micro trong cài đặt trang rồi thử lại.
+        </p>
       )}
     </div>
   );

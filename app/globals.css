@@ -3,41 +3,80 @@
 @tailwind utilities;
 
 @layer base {
-  html { -webkit-text-size-adjust: 100%; }
-  body { @apply bg-paper text-ink font-sans antialiased; }
-  h1 { @apply text-2xl font-semibold tracking-tight; }
-  h2 { @apply text-lg font-semibold; }
-  :focus-visible { @apply outline-none ring-2 ring-jade ring-offset-2 ring-offset-paper; }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  h1 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  h2 {
+    @apply text-lg font-semibold;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-jade ring-offset-2 ring-offset-paper;
+  }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition: none !important; animation: none !important; }
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium
-           transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
-  .btn-primary { @apply btn bg-jade text-white hover:bg-jade-dark; }
-  .btn-ghost { @apply btn border border-line bg-white text-ink hover:border-muted; }
-  .btn-danger { @apply btn px-2 text-seal hover:bg-seal-soft; }
+  .btn-primary {
+    @apply btn bg-jade text-white hover:bg-jade-dark;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-white text-ink hover:border-muted;
+  }
+  .btn-danger {
+    @apply btn px-2 text-seal hover:bg-seal-soft;
+  }
 
   .field {
-    @apply block w-full rounded-md border border-line bg-white px-3 py-2 text-sm text-ink
-           placeholder:text-muted/70 focus:border-jade focus:outline-none focus:ring-2 focus:ring-jade/20;
+    @apply block w-full rounded-md border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-jade focus:outline-none focus:ring-2 focus:ring-jade/20;
   }
-  .label { @apply mb-1 block text-sm font-medium; }
-  .hint { @apply mt-1 text-xs text-muted; }
+  .label {
+    @apply mb-1 block text-sm font-medium;
+  }
+  .hint {
+    @apply mt-1 text-xs text-muted;
+  }
 
-  .panel { @apply rounded-lg border border-line bg-white p-5; }
-  .rows { @apply divide-y divide-line rounded-lg border border-line bg-white; }
+  .panel {
+    @apply rounded-lg border border-line bg-white p-5;
+  }
+  .rows {
+    @apply divide-y divide-line rounded-lg border border-line bg-white;
+  }
 
   /* Mực đỏ của giáo viên: mọi nhận xét chữa bài dùng chung kiểu này */
-  .red-ink { @apply border-l-2 border-seal bg-seal-soft/60 px-3 py-2 text-sm text-seal; }
+  .red-ink {
+    @apply border-l-2 border-seal bg-seal-soft/60 px-3 py-2 text-sm text-seal;
+  }
 
-  .tag { @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium; }
-  .tag-draft { @apply tag bg-paper text-muted; }
-  .tag-submitted { @apply tag bg-amber-50 text-amber-800; }
-  .tag-graded { @apply tag bg-jade-soft text-jade-dark; }
-  .tag-late { @apply tag bg-seal-soft text-seal; }
+  .tag {
+    @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium;
+  }
+  .tag-draft {
+    @apply tag bg-paper text-muted;
+  }
+  .tag-submitted {
+    @apply tag bg-amber-50 text-amber-800;
+  }
+  .tag-graded {
+    @apply tag bg-jade-soft text-jade-dark;
+  }
+  .tag-late {
+    @apply tag bg-seal-soft text-seal;
+  }
 }

@@ -14,7 +14,9 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
 
   const { data: a } = await supabase
     .from('assignments')
-    .select('id, title, instructions, due_at, questions(id, type, prompt, options, points, position)')
+    .select(
+      'id, title, instructions, due_at, questions(id, type, prompt, options, points, position)',
+    )
     .eq('id', id)
     .order('position', { referencedTable: 'questions' })
     .single();
@@ -22,7 +24,9 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
 
   const { data: sub } = await supabase
     .from('submissions')
-    .select('id, status, submitted_at, score, teacher_comment, feedback_audio_path, submission_answers(*)')
+    .select(
+      'id, status, submitted_at, score, teacher_comment, feedback_audio_path, submission_answers(*)',
+    )
     .match({ assignment_id: id, student_id: profile.id })
     .maybeSingle();
 
@@ -31,11 +35,15 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
 
   const header = (
     <div>
-      <Link href="/student" className="text-sm text-muted hover:text-ink">‹ Lớp học</Link>
+      <Link href="/student" className="text-sm text-muted hover:text-ink">
+        ‹ Lớp học
+      </Link>
       <h1 className="mt-3">{a.title}</h1>
       <p className="mt-1 text-muted">
         Hạn {formatDate(a.due_at)} · {a.questions.length} câu · {maxScore} điểm
-        {!submitted && isOverdue(a.due_at) && <span className="tag-late ml-2">Quá hạn, vẫn nộp được</span>}
+        {!submitted && isOverdue(a.due_at) && (
+          <span className="tag-late ml-2">Quá hạn, vẫn nộp được</span>
+        )}
       </p>
       {a.instructions && <p className="mt-3 max-w-2xl whitespace-pre-wrap">{a.instructions}</p>}
     </div>
@@ -57,7 +65,8 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
           {graded ? (
             <>
               <p className="text-3xl font-semibold text-seal">
-                {Number(sub.score)}<span className="text-lg text-muted">/{maxScore}</span>
+                {Number(sub.score)}
+                <span className="text-lg text-muted">/{maxScore}</span>
               </p>
               <p className="text-muted">Giáo viên đã chấm. Lời chữa màu đỏ nằm dưới từng câu.</p>
             </>
@@ -69,7 +78,9 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
         {graded && (sub.teacher_comment || sub.feedback_audio_path) && (
           <section className="space-y-2">
             <h2>Nhận xét chung</h2>
-            {sub.teacher_comment && <p className="red-ink whitespace-pre-wrap">{sub.teacher_comment}</p>}
+            {sub.teacher_comment && (
+              <p className="red-ink whitespace-pre-wrap">{sub.teacher_comment}</p>
+            )}
             {sub.feedback_audio_path && urls[sub.feedback_audio_path] && (
               <audio src={urls[sub.feedback_audio_path]} controls className="w-full" />
             )}
@@ -83,20 +94,40 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
             return (
               <li key={q.id} className="panel space-y-3">
                 <div className="flex justify-between text-sm text-muted">
-                  <span>Câu {i + 1} · {QUESTION_LABELS[q.type]}</span>
-                  {graded && <span className="font-medium text-ink">{pts ?? 0}/{Number(q.points)}</span>}
-                </div>
-                <p className="whitespace-pre-wrap" lang="zh-CN">{q.prompt}</p>
-                <div className="rounded-md bg-paper p-3">
-                  {!ans && <p className="text-sm text-muted">Bạn bỏ trống câu này.</p>}
-                  {ans?.text_answer && <p className="whitespace-pre-wrap font-hanzi text-lg" lang="zh-CN">{ans.text_answer}</p>}
-                  {ans?.file_path && q.type === 'speaking' && <audio src={urls[ans.file_path]} controls className="w-full" />}
-                  {ans?.file_path && q.type !== 'speaking' && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={urls[ans.file_path]} alt="Bài bạn đã nộp" className="max-h-96 rounded border border-line" />
+                  <span>
+                    Câu {i + 1} · {QUESTION_LABELS[q.type]}
+                  </span>
+                  {graded && (
+                    <span className="font-medium text-ink">
+                      {pts ?? 0}/{Number(q.points)}
+                    </span>
                   )}
                 </div>
-                {graded && ans?.comment && <p className="red-ink whitespace-pre-wrap">{ans.comment}</p>}
+                <p className="whitespace-pre-wrap" lang="zh-CN">
+                  {q.prompt}
+                </p>
+                <div className="rounded-md bg-paper p-3">
+                  {!ans && <p className="text-sm text-muted">Bạn bỏ trống câu này.</p>}
+                  {ans?.text_answer && (
+                    <p className="whitespace-pre-wrap font-hanzi text-lg" lang="zh-CN">
+                      {ans.text_answer}
+                    </p>
+                  )}
+                  {ans?.file_path && q.type === 'speaking' && (
+                    <audio src={urls[ans.file_path]} controls className="w-full" />
+                  )}
+                  {ans?.file_path && q.type !== 'speaking' && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={urls[ans.file_path]}
+                      alt="Bài bạn đã nộp"
+                      className="max-h-96 rounded border border-line"
+                    />
+                  )}
+                </div>
+                {graded && ans?.comment && (
+                  <p className="red-ink whitespace-pre-wrap">{ans.comment}</p>
+                )}
               </li>
             );
           })}
@@ -116,15 +147,22 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
               <p className="text-sm text-muted">
                 Câu {i + 1} · {QUESTION_LABELS[q.type]} · {Number(q.points)} điểm
               </p>
-              <p className="whitespace-pre-wrap text-lg" lang="zh-CN">{q.prompt}</p>
+              <p className="whitespace-pre-wrap text-lg" lang="zh-CN">
+                {q.prompt}
+              </p>
 
               {q.type === 'multiple_choice' && (
                 <fieldset className="space-y-2">
                   <legend className="sr-only">Chọn một đáp án</legend>
                   {questionOptions(q.options).map((opt) => (
-                    <label key={opt} className="flex cursor-pointer items-center gap-3 rounded-md border border-line px-3 py-2.5 has-[:checked]:border-jade has-[:checked]:bg-jade-soft">
+                    <label
+                      key={opt}
+                      className="flex cursor-pointer items-center gap-3 rounded-md border border-line px-3 py-2.5 has-[:checked]:border-jade has-[:checked]:bg-jade-soft"
+                    >
                       <input type="radio" name={`q_${q.id}`} value={opt} className="accent-jade" />
-                      <span className="font-hanzi text-lg" lang="zh-CN">{opt}</span>
+                      <span className="font-hanzi text-lg" lang="zh-CN">
+                        {opt}
+                      </span>
                     </label>
                   ))}
                 </fieldset>
@@ -132,7 +170,10 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
 
               {(q.type === 'fill_blank' || q.type === 'pinyin') && (
                 <input
-                  name={`q_${q.id}`} className="field text-lg" autoComplete="off" autoCapitalize="off"
+                  name={`q_${q.id}`}
+                  className="field text-lg"
+                  autoComplete="off"
+                  autoCapitalize="off"
                   lang={q.type === 'pinyin' ? undefined : 'zh-CN'}
                   placeholder={q.type === 'pinyin' ? 'nǐ hǎo hoặc ni3 hao3' : 'Câu trả lời'}
                   aria-label={`Trả lời câu ${i + 1}`}
@@ -140,12 +181,25 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
               )}
 
               {q.type === 'essay' && (
-                <textarea name={`q_${q.id}`} rows={5} lang="zh-CN" className="field text-lg" aria-label={`Trả lời câu ${i + 1}`} />
+                <textarea
+                  name={`q_${q.id}`}
+                  rows={5}
+                  lang="zh-CN"
+                  className="field text-lg"
+                  aria-label={`Trả lời câu ${i + 1}`}
+                />
               )}
 
               {q.type === 'writing' && (
                 <div>
-                  <input name={`f_${q.id}`} type="file" accept="image/*" capture="environment" className="field py-1.5" aria-label="Ảnh bài viết tay" />
+                  <input
+                    name={`f_${q.id}`}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="field py-1.5"
+                    aria-label="Ảnh bài viết tay"
+                  />
                   <p className="hint">Viết ra giấy ô li, chụp thẳng và đủ sáng. Tối đa 10 MB.</p>
                 </div>
               )}

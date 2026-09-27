@@ -8,25 +8,27 @@ type PublicSchema = Database['public'];
 export type Tables<T extends keyof PublicSchema['Tables']> = PublicSchema['Tables'][T]['Row'];
 
 /** Dữ liệu để thêm mới: TablesInsert<'lessons'> */
-export type TablesInsert<T extends keyof PublicSchema['Tables']> = PublicSchema['Tables'][T]['Insert'];
+export type TablesInsert<T extends keyof PublicSchema['Tables']> =
+  PublicSchema['Tables'][T]['Insert'];
 
 /** Dữ liệu để cập nhật: TablesUpdate<'lessons'> */
-export type TablesUpdate<T extends keyof PublicSchema['Tables']> = PublicSchema['Tables'][T]['Update'];
+export type TablesUpdate<T extends keyof PublicSchema['Tables']> =
+  PublicSchema['Tables'][T]['Update'];
 
 /** Giá trị của enum: Enums<'question_type'> */
 export type Enums<T extends keyof PublicSchema['Enums']> = PublicSchema['Enums'][T];
 
-export type Role           = Enums<'user_role'>;
-export type QuestionType   = Enums<'question_type'>;
-export type MaterialType   = Enums<'material_type'>;
+export type Role = Enums<'user_role'>;
+export type QuestionType = Enums<'question_type'>;
+export type MaterialType = Enums<'material_type'>;
 export type SubmissionStatus = Enums<'submission_status'>;
 
-export type Profile    = Tables<'profiles'>;
-export type Class      = Tables<'classes'>;
-export type Lesson     = Tables<'lessons'>;
-export type Vocab      = Tables<'vocab'>;
+export type Profile = Tables<'profiles'>;
+export type Class = Tables<'classes'>;
+export type Lesson = Tables<'lessons'>;
+export type Vocab = Tables<'vocab'>;
 export type Assignment = Tables<'assignments'>;
-export type Question   = Tables<'questions'>;
+export type Question = Tables<'questions'>;
 export type Submission = Tables<'submissions'>;
 
 /**

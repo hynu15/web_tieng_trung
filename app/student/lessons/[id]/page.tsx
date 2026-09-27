@@ -19,12 +19,18 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
     .single();
   if (!lesson) notFound();
 
-  const urls = await signedUrls(supabase, 'materials', lesson.lesson_materials.map((m) => m.storage_path));
+  const urls = await signedUrls(
+    supabase,
+    'materials',
+    lesson.lesson_materials.map((m) => m.storage_path),
+  );
 
   return (
     <article className="space-y-10">
       <div>
-        <Link href="/student" className="text-sm text-muted hover:text-ink">‹ Lớp học</Link>
+        <Link href="/student" className="text-sm text-muted hover:text-ink">
+          ‹ Lớp học
+        </Link>
         <h1 className="mt-3">{lesson.title}</h1>
         {lesson.summary && <p className="mt-2 max-w-2xl text-muted">{lesson.summary}</p>}
       </div>
@@ -38,14 +44,27 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
           <section key={m.id} className="space-y-2">
             <h2>{m.title}</h2>
             {yt ? (
-              <iframe src={yt} title={m.title} allowFullScreen className="aspect-video w-full rounded-lg border border-line" />
+              <iframe
+                src={yt}
+                title={m.title}
+                allowFullScreen
+                className="aspect-video w-full rounded-lg border border-line"
+              />
             ) : isPdf ? (
               <>
-                <iframe src={src} title={m.title} className="hidden h-[75vh] w-full rounded-lg border border-line md:block" />
-                <a href={src} target="_blank" rel="noreferrer" className="btn-ghost md:hidden">Mở slide</a>
+                <iframe
+                  src={src}
+                  title={m.title}
+                  className="hidden h-[75vh] w-full rounded-lg border border-line md:block"
+                />
+                <a href={src} target="_blank" rel="noreferrer" className="btn-ghost md:hidden">
+                  Mở slide
+                </a>
               </>
             ) : (
-              <a href={src} target="_blank" rel="noreferrer" className="btn-ghost">Mở tài liệu</a>
+              <a href={src} target="_blank" rel="noreferrer" className="btn-ghost">
+                Mở tài liệu
+              </a>
             )}
           </section>
         );
@@ -61,7 +80,11 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="text-lg font-medium">{v.pinyin}</p>
                   <p className="text-muted">{v.meaning_vi}</p>
-                  {v.example && <p className="font-hanzi" lang="zh-CN">{v.example}</p>}
+                  {v.example && (
+                    <p className="font-hanzi" lang="zh-CN">
+                      {v.example}
+                    </p>
+                  )}
                   <SpeakButton text={v.hanzi} />
                 </div>
               </li>
