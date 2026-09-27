@@ -1,3 +1,5 @@
+import type { QuestionType } from './types';
+
 const dateFmt = new Intl.DateTimeFormat('vi-VN', {
   weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
   timeZone: 'Asia/Ho_Chi_Minh',
@@ -11,7 +13,12 @@ export function isOverdue(iso: string | null | undefined) {
   return !!iso && new Date(iso).getTime() < Date.now();
 }
 
-export const QUESTION_LABELS: Record<string, string> = {
+// Nộp sau hạn. Cả hai mốc đều có thể trống: chưa nộp, hoặc bài không đặt hạn.
+export function isLate(submittedAt: string | null | undefined, dueAt: string | null | undefined) {
+  return !!submittedAt && !!dueAt && new Date(submittedAt).getTime() > new Date(dueAt).getTime();
+}
+
+export const QUESTION_LABELS: Record<QuestionType, string> = {
   multiple_choice: 'Trắc nghiệm',
   fill_blank: 'Điền từ',
   pinyin: 'Viết pinyin',
@@ -20,7 +27,8 @@ export const QUESTION_LABELS: Record<string, string> = {
   speaking: 'Nói (ghi âm)',
 };
 
-export const AUTO_GRADED = ['multiple_choice', 'fill_blank', 'pinyin'];
+// Ba dạng máy chấm được; khớp với điều kiện trong hàm SQL submit_assignment.
+export const AUTO_GRADED: readonly QuestionType[] = ['multiple_choice', 'fill_blank', 'pinyin'];
 
 // Chuyển link YouTube thường thành link nhúng
 export function youtubeEmbed(url: string) {

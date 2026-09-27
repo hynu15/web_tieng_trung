@@ -20,9 +20,9 @@ export default async function AssignmentsPage() {
         <h1>Bài tập</h1>
         {assignments?.length ? (
           <ul className="rows mt-4">
-            {assignments.map((a: any) => {
-              const toGrade = a.submissions.filter((s: any) => s.status === 'submitted').length;
-              const turnedIn = a.submissions.filter((s: any) => s.status !== 'draft').length;
+            {assignments.map((a) => {
+              const toGrade = a.submissions.filter((s) => s.status === 'submitted').length;
+              const turnedIn = a.submissions.filter((s) => s.status !== 'draft').length;
               return (
                 <li key={a.id}>
                   <Link href={`/teacher/assignments/${a.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-paper">
@@ -53,14 +53,14 @@ export default async function AssignmentsPage() {
             <div>
               <label className="label" htmlFor="class_id">Lớp</label>
               <select id="class_id" name="class_id" className="field">
-                {classes.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
               <label className="label" htmlFor="lesson_id">Gắn với bài giảng</label>
               <select id="lesson_id" name="lesson_id" className="field" defaultValue="">
                 <option value="">Không gắn</option>
-                {lessons?.map((l: any) => <option key={l.id} value={l.id}>{l.title}</option>)}
+                {lessons?.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}
               </select>
             </div>
             <div>

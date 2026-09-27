@@ -40,7 +40,7 @@ Vấn đề đã biết (được xử lý trong các task bên dưới):
 | Mã | Task | Phụ thuộc | Xong |
 |----|------|-----------|------|
 | P0-01 | Supabase local + migrations + seed | — | [x] |
-| P0-02 | Sinh kiểu database, bỏ `any` | P0-01 | [ ] |
+| P0-02 | Sinh kiểu database, bỏ `any` | P0-01 | [x] |
 | P0-03 | ESLint, Prettier, script kiểm tra | — | [ ] |
 | P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright | P0-01, P0-03 | [ ] |
 | P0-05 | CI GitHub Actions | P0-04 | [ ] |
@@ -382,3 +382,19 @@ _(Mỗi task xong thêm một dòng: ngày — mã task — tóm tắt — ghi c
   ngoại `profiles!classes_teacher_id_fkey`. Đã rà 4 query lồng nhau còn lại của giáo viên — không chỗ nào bị.
   *Ghi chú cho task sau:* P0-04 nên có e2e chặn đúng lỗi này (học viên seed thấy 1 bài giảng + 1 bài tập);
   khi viết select lồng nhau mới, luôn chỉ rõ khoá ngoại nếu hai bảng có nhiều hơn một quan hệ.
+
+- 2026-09-28 — P0-02 — `lib/database.types.ts` sinh bằng `npm run db:types`; truyền generic `Database` vào
+  `createServerClient` và `createBrowserClient`; thêm `lib/types.ts` (`Tables`, `TablesInsert`, `TablesUpdate`,
+  `Enums` + bí danh sẵn dùng). Xoá sạch 40 chỗ `any` trong `app/` — phần lớn chỉ cần bỏ annotation vì Supabase
+  đã tự suy ra kiểu từ câu select. Bỏ `must` dùng `any`, thay bằng `must<T>(res: PostgrestSingleResponse<T>)`.
+  Kiểu mới lộ ra 6 lỗi tiềm ẩn mà `any` đang che, đã sửa hết:
+  (1) `signedUrls` khai `string[]` nhưng cả 3 chỗ gọi đều truyền cột nullable → đổi chữ ký nhận `(string|null)[]`;
+  (2) `questions.options` là `Json` chứ không phải `string[]` → thêm `questionOptions()` trong `lib/types.ts`;
+  (3) `new Date(submitted_at)` với cột nullable ở 2 trang → thêm `isLate()` trong `lib/format.ts`;
+  (4) `byStudent.get(...)` có thể `undefined` nhưng bị đọc thẳng `.score`/`.submitted_at`;
+  (5) `src` của `<iframe>`/`<a>` nhận `null`, trong khi JSX cần `undefined`;
+  (6) `QUESTION_LABELS`/`AUTO_GRADED` khai `string` → buộc theo `Enums<'question_type'>`, nên thêm giá trị enum
+  mới trong migration mà quên cập nhật hai chỗ này thì TypeScript báo lỗi ngay. `pickEnum()` thu hẹp giá trị
+  `<select>` trước khi ghi database.
+  *Ghi chú cho task sau:* `lib/database.types.ts` do CLI sinh ra chưa format, P0-03 chạy Prettier sẽ dọn — đừng
+  sửa tay file đó, sinh lại bằng `npm run db:types`. `lib/types.ts` là chỗ để thêm helper đọc cột jsonb về sau.

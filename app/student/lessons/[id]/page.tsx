@@ -19,7 +19,7 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
     .single();
   if (!lesson) notFound();
 
-  const urls = await signedUrls(supabase, 'materials', lesson.lesson_materials.map((m: any) => m.storage_path));
+  const urls = await signedUrls(supabase, 'materials', lesson.lesson_materials.map((m) => m.storage_path));
 
   return (
     <article className="space-y-10">
@@ -29,8 +29,9 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
         {lesson.summary && <p className="mt-2 max-w-2xl text-muted">{lesson.summary}</p>}
       </div>
 
-      {lesson.lesson_materials.map((m: any) => {
-        const src = m.storage_path ? urls[m.storage_path] : m.url;
+      {lesson.lesson_materials.map((m) => {
+        // Thuộc tính src/href của JSX nhận undefined chứ không nhận null.
+        const src = (m.storage_path ? urls[m.storage_path] : m.url) ?? undefined;
         const yt = m.type === 'video' && m.url ? youtubeEmbed(m.url) : null;
         const isPdf = m.storage_path?.endsWith('.pdf');
         return (
@@ -54,7 +55,7 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
         <section>
           <h2>Từ vựng ({lesson.vocab.length})</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {lesson.vocab.map((v: any) => (
+            {lesson.vocab.map((v) => (
               <li key={v.id} className="flex gap-4 rounded-lg border border-line bg-white p-4">
                 <HanziWord text={v.hanzi} size={56} />
                 <div className="min-w-0 flex-1 space-y-1">

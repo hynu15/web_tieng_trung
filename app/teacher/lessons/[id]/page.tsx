@@ -46,7 +46,7 @@ export default async function LessonEditor({ params }: { params: Promise<{ id: s
         <h2>Tài liệu</h2>
         {lesson.lesson_materials.length > 0 && (
           <ul className="rows mt-3">
-            {lesson.lesson_materials.map((m: any) => (
+            {lesson.lesson_materials.map((m) => (
               <li key={m.id} className="flex items-center gap-3 px-4 py-2.5">
                 <span className="tag-draft">{MATERIAL_LABELS[m.type]}</span>
                 <span className="min-w-0 flex-1 truncate">{m.title}</span>
@@ -90,7 +90,7 @@ export default async function LessonEditor({ params }: { params: Promise<{ id: s
         <h2>Từ vựng</h2>
         {lesson.vocab.length > 0 && (
           <ul className="rows mt-3">
-            {lesson.vocab.map((v: any) => (
+            {lesson.vocab.map((v) => (
               <li key={v.id} className="flex items-center gap-4 px-4 py-3">
                 <HanziWord text={v.hanzi} size={40} />
                 <div className="min-w-0 flex-1">

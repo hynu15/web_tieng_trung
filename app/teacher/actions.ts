@@ -2,16 +2,36 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import type { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { requireRole } from '@/lib/auth';
 import { vnLocalToIso } from '@/lib/format';
 import { isRealFile, uploadFile } from '@/lib/storage';
+import type { MaterialType, QuestionType, TablesUpdate } from '@/lib/types';
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? '').trim();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const must = <T,>(res: { error: { message: string } | null; data?: any }): T => {
+
+/**
+ * Ném lỗi nếu Supabase trả error, ngược lại trả về data đã có kiểu.
+ * Kiểu của data được Supabase suy ra từ câu select nên không cần khai báo tay.
+ */
+function must<T>(res: PostgrestSingleResponse<T>): T {
   if (res.error) throw new Error(res.error.message);
-  return res.data as T;
-};
+  return res.data;
+}
+
+// Giá trị enum gửi từ <select> là string, phải thu hẹp lại trước khi ghi vào
+// database. Danh sách khai báo theo kiểu enum sinh từ database: thêm giá trị
+// mới trong migration mà quên sửa ở đây thì TypeScript báo lỗi ngay.
+const MATERIAL_TYPES: readonly MaterialType[] = ['slide', 'video', 'document', 'link'];
+const QUESTION_TYPES: readonly QuestionType[] = [
+  'multiple_choice', 'fill_blank', 'pinyin', 'essay', 'writing', 'speaking',
+];
+
+function pickEnum<T extends string>(allowed: readonly T[], value: string, label: string): T {
+  const hit = allowed.find((a) => a === value);
+  if (!hit) throw new Error(`${label} không hợp lệ.`);
+  return hit;
+}
 
 // ---------- Lớp học ----------
 export async function createClass(fd: FormData) {
@@ -34,7 +54,7 @@ export async function removeStudent(classId: string, studentId: string) {
 // ---------- Bài giảng ----------
 export async function createLesson(fd: FormData) {
   const { supabase } = await requireRole('teacher');
-  const lesson = must<{ id: string }>(
+  const lesson = must(
     await supabase.from('lessons')
       .insert({ class_id: str(fd, 'class_id'), title: str(fd, 'title'), summary: str(fd, 'summary') || null })
       .select('id').single(),
@@ -71,7 +91,7 @@ export async function addMaterial(lessonId: string, classId: string, fd: FormDat
   }
   must(await supabase.from('lesson_materials').insert({
     lesson_id: lessonId,
-    type: str(fd, 'type'),
+    type: pickEnum(MATERIAL_TYPES, str(fd, 'type'), 'Loại tài liệu'),
     title: str(fd, 'title') || (isRealFile(file) ? file.name : url),
     storage_path,
     url: storage_path ? null : url,
@@ -107,7 +127,7 @@ export async function deleteVocab(id: string, lessonId: string) {
 // ---------- Bài tập ----------
 export async function createAssignment(fd: FormData) {
   const { supabase } = await requireRole('teacher');
-  const a = must<{ id: string }>(
+  const a = must(
     await supabase.from('assignments').insert({
       class_id: str(fd, 'class_id'),
       lesson_id: str(fd, 'lesson_id') || null,
@@ -133,14 +153,14 @@ export async function updateAssignment(id: string, fd: FormData) {
 
 export async function addQuestion(assignmentId: string, fd: FormData) {
   const { supabase } = await requireRole('teacher');
-  const type = str(fd, 'type');
+  const type = pickEnum(QUESTION_TYPES, str(fd, 'type'), 'Dạng câu hỏi');
   const options = str(fd, 'options').split('\n').map((s) => s.trim()).filter(Boolean);
   if (type === 'multiple_choice' && options.length < 2) throw new Error('Câu trắc nghiệm cần ít nhất 2 phương án.');
 
   const { count } = await supabase.from('questions')
     .select('id', { count: 'exact', head: true }).eq('assignment_id', assignmentId);
 
-  const q = must<{ id: string }>(
+  const q = must(
     await supabase.from('questions').insert({
       assignment_id: assignmentId,
       type,
@@ -168,12 +188,12 @@ export async function deleteQuestion(id: string, assignmentId: string) {
 export async function gradeSubmission(submissionId: string, fd: FormData) {
   const { supabase } = await requireRole('teacher');
 
-  const sub = must<{ id: string; student_id: string; assignment: { id: string; class_id: string } }>(
+  const sub = must(
     await supabase.from('submissions')
       .select('id, student_id, assignment:assignments(id, class_id)')
       .eq('id', submissionId).single(),
   );
-  const answers = must<{ id: string; auto_score: number | null }[]>(
+  const answers = must(
     await supabase.from('submission_answers').select('id, auto_score').eq('submission_id', submissionId),
   );
 
@@ -187,7 +207,7 @@ export async function gradeSubmission(submissionId: string, fd: FormData) {
   }
 
   const audio = fd.get('feedback_audio');
-  const update: Record<string, unknown> = {
+  const update: TablesUpdate<'submissions'> = {
     status: 'graded',
     score: total,
     graded_at: new Date().toISOString(),

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
-import { AUTO_GRADED, QUESTION_LABELS, formatDate } from '@/lib/format';
+import { AUTO_GRADED, QUESTION_LABELS, formatDate, isLate } from '@/lib/format';
 import { signedUrls } from '@/lib/storage';
 import { AudioRecorder } from '@/components/AudioRecorder';
 import { SubmitButton } from '@/components/SubmitButton';
@@ -21,14 +21,14 @@ export default async function GradePage({ params }: { params: Promise<{ id: stri
     .single();
   if (!sub) notFound();
 
-  const s: any = sub;
-  const questions = [...s.assignment.questions].sort((a: any, b: any) => a.position - b.position);
-  const answerByQ = new Map(s.submission_answers.map((x: any) => [x.question_id, x]));
+  const s = sub;
+  const questions = [...s.assignment.questions].sort((a, b) => a.position - b.position);
+  const answerByQ = new Map(s.submission_answers.map((x) => [x.question_id, x]));
   const urls = await signedUrls(supabase, 'submissions', [
-    ...s.submission_answers.map((x: any) => x.file_path),
+    ...s.submission_answers.map((x) => x.file_path),
     s.feedback_audio_path,
   ]);
-  const late = s.assignment.due_at && new Date(s.submitted_at) > new Date(s.assignment.due_at);
+  const late = isLate(s.submitted_at, s.assignment.due_at);
 
   return (
     <div className="space-y-8">
@@ -45,8 +45,8 @@ export default async function GradePage({ params }: { params: Promise<{ id: stri
 
       <form action={gradeSubmission.bind(null, id)} className="space-y-6">
         <ol className="space-y-4">
-          {questions.map((q: any, i: number) => {
-            const ans: any = answerByQ.get(q.id);
+          {questions.map((q, i: number) => {
+            const ans = answerByQ.get(q.id);
             const auto = AUTO_GRADED.includes(q.type);
             return (
               <li key={q.id} className="panel space-y-3">

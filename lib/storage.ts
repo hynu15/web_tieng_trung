@@ -17,8 +17,13 @@ export async function uploadFile(supabase: Client, bucket: string, folder: strin
 }
 
 // Bucket để private → tạo link có hạn (1 giờ) khi hiển thị
-export async function signedUrls(supabase: Client, bucket: string, paths: string[]) {
-  const clean = paths.filter(Boolean);
+// Nhận thẳng cột nullable (storage_path, file_path) và tự bỏ ô trống.
+export async function signedUrls(
+  supabase: Client,
+  bucket: string,
+  paths: readonly (string | null | undefined)[],
+) {
+  const clean = paths.filter((p): p is string => !!p);
   if (clean.length === 0) return {} as Record<string, string>;
   const { data } = await supabase.storage.from(bucket).createSignedUrls(clean, 3600);
   const map: Record<string, string> = {};

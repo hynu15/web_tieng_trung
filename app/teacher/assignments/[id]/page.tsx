@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
 import { AUTO_GRADED, QUESTION_LABELS, formatDate, isoToVnLocal } from '@/lib/format';
+import { questionOptions } from '@/lib/types';
 import { SubmitButton } from '@/components/SubmitButton';
 import { addQuestion, deleteQuestion, updateAssignment } from '../../actions';
 
@@ -21,8 +22,8 @@ export default async function AssignmentEditor({ params }: { params: Promise<{ i
     supabase.from('class_members').select('student:profiles(id, full_name)').eq('class_id', a.class_id),
     supabase.from('submissions').select('id, student_id, status, score, submitted_at').eq('assignment_id', id),
   ]);
-  const byStudent = new Map((subs ?? []).map((s: any) => [s.student_id, s]));
-  const maxScore = a.questions.reduce((t: number, q: any) => t + Number(q.points), 0);
+  const byStudent = new Map((subs ?? []).map((s) => [s.student_id, s]));
+  const maxScore = a.questions.reduce((t: number, q) => t + Number(q.points), 0);
 
   return (
     <div className="space-y-10">
@@ -56,14 +57,14 @@ export default async function AssignmentEditor({ params }: { params: Promise<{ i
         </h2>
         {a.questions.length > 0 && (
           <ol className="rows mt-3">
-            {a.questions.map((q: any, i: number) => (
+            {a.questions.map((q, i: number) => (
               <li key={q.id} className="flex gap-3 px-4 py-3">
                 <span className="w-6 shrink-0 pt-0.5 text-sm text-muted">{i + 1}.</span>
                 <div className="min-w-0 flex-1">
                   <p className="whitespace-pre-wrap" lang="zh-CN">{q.prompt}</p>
                   <p className="mt-1 text-sm text-muted">
                     {QUESTION_LABELS[q.type]} · {Number(q.points)} điểm
-                    {q.options && ` · ${q.options.join(' / ')}`}
+                    {questionOptions(q.options).length > 0 && ` · ${questionOptions(q.options).join(' / ')}`}
                   </p>
                   {AUTO_GRADED.includes(q.type) && (
                     <p className="mt-1 text-sm">
@@ -118,14 +119,14 @@ export default async function AssignmentEditor({ params }: { params: Promise<{ i
           <p className="mt-2 text-sm text-muted">Lớp chưa có học viên.</p>
         ) : (
           <ul className="rows mt-3">
-            {members.map((m: any) => {
-              const s: any = byStudent.get(m.student.id);
+            {members.map((m) => {
+              const s = byStudent.get(m.student.id);
               const status = s?.status ?? 'none';
               return (
                 <li key={m.student.id} className="flex items-center gap-3 px-4 py-2.5">
                   <span className="min-w-0 flex-1 truncate">{m.student.full_name || 'Chưa đặt tên'}</span>
-                  {status === 'graded' && <span className="text-sm font-medium">{Number(s.score)}/{maxScore}</span>}
-                  {status === 'submitted' && <span className="hidden text-sm text-muted sm:block">{formatDate(s.submitted_at)}</span>}
+                  {s && status === 'graded' && <span className="text-sm font-medium">{Number(s.score)}/{maxScore}</span>}
+                  {s && status === 'submitted' && <span className="hidden text-sm text-muted sm:block">{formatDate(s.submitted_at)}</span>}
                   <span className={{ graded: 'tag-graded', submitted: 'tag-submitted' }[status as string] ?? 'tag-draft'}>
                     {{ graded: 'Đã chấm', submitted: 'Chờ chấm' }[status as string] ?? 'Chưa nộp'}
                   </span>

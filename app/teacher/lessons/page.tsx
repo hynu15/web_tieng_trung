@@ -18,7 +18,7 @@ export default async function LessonsPage() {
         <h1>Bài giảng</h1>
         {lessons?.length ? (
           <ul className="rows mt-4">
-            {lessons.map((l: any) => (
+            {lessons.map((l) => (
               <li key={l.id}>
                 <Link href={`/teacher/lessons/${l.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-paper">
                   <div className="min-w-0 flex-1">
@@ -46,7 +46,7 @@ export default async function LessonsPage() {
             <div>
               <label className="label" htmlFor="class_id">Lớp</label>
               <select id="class_id" name="class_id" className="field">
-                {classes.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>

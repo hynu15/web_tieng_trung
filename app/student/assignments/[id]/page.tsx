@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
 import { QUESTION_LABELS, formatDate, isOverdue } from '@/lib/format';
+import { questionOptions } from '@/lib/types';
 import { signedUrls } from '@/lib/storage';
 import { AudioRecorder } from '@/components/AudioRecorder';
 import { SubmitButton } from '@/components/SubmitButton';
@@ -25,7 +26,7 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
     .match({ assignment_id: id, student_id: profile.id })
     .maybeSingle();
 
-  const maxScore = a.questions.reduce((t: number, q: any) => t + Number(q.points), 0);
+  const maxScore = a.questions.reduce((t: number, q) => t + Number(q.points), 0);
   const submitted = sub && sub.status !== 'draft';
 
   const header = (
@@ -43,9 +44,9 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
   // ---------- Đã nộp: xem bài và lời chữa ----------
   if (submitted) {
     const graded = sub.status === 'graded';
-    const answerByQ = new Map(sub.submission_answers.map((x: any) => [x.question_id, x]));
+    const answerByQ = new Map(sub.submission_answers.map((x) => [x.question_id, x]));
     const urls = await signedUrls(supabase, 'submissions', [
-      ...sub.submission_answers.map((x: any) => x.file_path),
+      ...sub.submission_answers.map((x) => x.file_path),
       sub.feedback_audio_path,
     ]);
 
@@ -76,8 +77,8 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
         )}
 
         <ol className="space-y-4">
-          {a.questions.map((q: any, i: number) => {
-            const ans: any = answerByQ.get(q.id);
+          {a.questions.map((q, i: number) => {
+            const ans = answerByQ.get(q.id);
             const pts = ans?.teacher_score ?? ans?.auto_score;
             return (
               <li key={q.id} className="panel space-y-3">
@@ -110,7 +111,7 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
       {header}
       <form action={submitAssignment.bind(null, id)} className="space-y-4">
         <ol className="space-y-4">
-          {a.questions.map((q: any, i: number) => (
+          {a.questions.map((q, i: number) => (
             <li key={q.id} className="panel space-y-3">
               <p className="text-sm text-muted">
                 Câu {i + 1} · {QUESTION_LABELS[q.type]} · {Number(q.points)} điểm
@@ -120,7 +121,7 @@ export default async function AssignmentView({ params }: { params: Promise<{ id:
               {q.type === 'multiple_choice' && (
                 <fieldset className="space-y-2">
                   <legend className="sr-only">Chọn một đáp án</legend>
-                  {(q.options ?? []).map((opt: string) => (
+                  {questionOptions(q.options).map((opt) => (
                     <label key={opt} className="flex cursor-pointer items-center gap-3 rounded-md border border-line px-3 py-2.5 has-[:checked]:border-jade has-[:checked]:bg-jade-soft">
                       <input type="radio" name={`q_${q.id}`} value={opt} className="accent-jade" />
                       <span className="font-hanzi text-lg" lang="zh-CN">{opt}</span>

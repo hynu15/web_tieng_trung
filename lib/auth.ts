@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from './supabase/server';
+import type { Role } from './types';
 
-export type Role = 'teacher' | 'student';
-export type Profile = { id: string; role: Role; full_name: string };
+export type { Role };
 
 export async function getSession() {
   const supabase = await createClient();
@@ -18,7 +18,8 @@ export async function getSession() {
     .single();
   if (!profile) redirect('/login');
 
-  return { supabase, user, profile: profile as Profile };
+  // profile đã có kiểu từ Database generic, không cần ép kiểu.
+  return { supabase, user, profile };
 }
 
 export async function requireRole(role: Role) {

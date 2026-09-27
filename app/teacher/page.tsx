@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireRole } from '@/lib/auth';
-import { formatDate, isOverdue } from '@/lib/format';
+import { formatDate, isLate, isOverdue } from '@/lib/format';
 import { SubmitButton } from '@/components/SubmitButton';
 import { createClass } from './actions';
 
@@ -26,8 +26,8 @@ export default async function TeacherHome() {
         </p>
         {!!pending?.length && (
           <ul className="rows mt-4">
-            {pending.map((s: any) => {
-              const late = s.assignment?.due_at && new Date(s.submitted_at) > new Date(s.assignment.due_at);
+            {pending.map((s) => {
+              const late = isLate(s.submitted_at, s.assignment?.due_at);
               return (
                 <li key={s.id}>
                   <Link href={`/teacher/submissions/${s.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-paper">
@@ -51,7 +51,7 @@ export default async function TeacherHome() {
           <h2>Lớp của bạn</h2>
           {classes?.length ? (
             <ul className="rows mt-3">
-              {classes.map((c: any) => (
+              {classes.map((c) => (
                 <li key={c.id} className="px-4 py-3">
                   <p className="font-medium">
                     {c.name} {c.hsk_level && <span className="text-sm font-normal text-muted">HSK {c.hsk_level}</span>}

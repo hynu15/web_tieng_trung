@@ -50,8 +50,8 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
       .order('created_at', { ascending: false }),
   ]);
 
-  const todo = (assignments ?? []).filter((a: any) => !a.submissions[0] || a.submissions[0].status === 'draft');
-  const done = (assignments ?? []).filter((a: any) => a.submissions[0] && a.submissions[0].status !== 'draft');
+  const todo = (assignments ?? []).filter((a) => !a.submissions[0] || a.submissions[0].status === 'draft');
+  const done = (assignments ?? []).filter((a) => a.submissions[0] && a.submissions[0].status !== 'draft');
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr]">
@@ -62,7 +62,7 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
             <p className="mt-2 text-muted">Không còn bài nào. Ôn lại từ vựng ở các bài giảng bên cạnh.</p>
           ) : (
             <ul className="rows mt-4">
-              {todo.map((a: any) => (
+              {todo.map((a) => (
                 <li key={a.id}>
                   <Link href={`/student/assignments/${a.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-paper">
                     <div className="min-w-0 flex-1">
@@ -82,7 +82,7 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
           <div>
             <h2>Đã nộp</h2>
             <ul className="rows mt-3">
-              {done.map((a: any) => {
+              {done.map((a) => {
                 const s = a.submissions[0];
                 return (
                   <li key={a.id}>
@@ -109,13 +109,13 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
             <p className="mt-2 text-sm text-muted">Giáo viên chưa đăng bài giảng nào.</p>
           ) : (
             <ul className="rows mt-3">
-              {lessons.map((l: any) => (
+              {lessons.map((l) => (
                 <li key={l.id}>
                   <Link href={`/student/lessons/${l.id}`} className="block px-4 py-3 hover:bg-paper">
                     <p className="font-medium">{l.title}</p>
                     {l.vocab.length > 0 && (
                       <p className="mt-1 truncate font-hanzi text-muted" lang="zh-CN">
-                        {l.vocab.map((v: any) => v.hanzi).join('、')}
+                        {l.vocab.map((v) => v.hanzi).join('、')}
                       </p>
                     )}
                   </Link>
@@ -127,7 +127,7 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
 
         <div className="text-sm text-muted">
           <p>
-            Lớp: {memberships.map((m: any) => `${m.class.name}${m.class.teacher?.full_name ? ` (GV ${m.class.teacher.full_name})` : ''}`).join(', ')}
+            Lớp: {memberships.map((m) => `${m.class.name}${m.class.teacher?.full_name ? ` (GV ${m.class.teacher.full_name})` : ''}`).join(', ')}
           </p>
           <p className="mb-2 mt-4">Vào thêm lớp khác</p>
           {error && <p className="red-ink mb-2">{error}</p>}
