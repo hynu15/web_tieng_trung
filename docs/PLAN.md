@@ -47,7 +47,7 @@ Vấn đề đã biết (được xử lý trong các task bên dưới):
 | P0-03 | ESLint, Prettier, script kiểm tra              | —             | [x]  |
 | P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright        | P0-01, P0-03  | [x]  |
 | P0-05 | CI GitHub Actions                              | P0-04         | [ ]  |
-| P0-06 | Áp dụng template UI **[Hỏi trước]**            | —             | [ ]  |
+| P0-06 | Áp dụng template UI **[Hỏi trước]**            | —             | [x]  |
 | P1-01 | Báo lỗi trên form bằng `useActionState` + zod  | P0-02         | [ ]  |
 | P1-02 | Xác nhận email, quên mật khẩu, trang tài khoản | P1-01         | [ ]  |
 | P1-03 | Upload trực tiếp lên Storage + nén ảnh         | P1-01         | [ ]  |
@@ -494,3 +494,27 @@ db:reset/db:types/test:db`. README có mục "Phát triển local"; mục cloud 
   _Việc còn lại:_ tạo repo trên GitHub, `git remote add origin …`, đẩy một nhánh và mở PR thử, rồi tick `[x]`.
   _Ghi chú:_ job e2e truyền `NEXT_PUBLIC_SUPABASE_*` ở bước chạy test chứ không qua `.env.local` (file đó
   không nằm trong git); `playwright.config.ts` thấy biến `CI` thì tự khởi động dev server riêng thay vì dùng lại.
+
+- 2026-09-28 — P0-06 — Giao diện mới, có chế độ sáng và tối. Bản mẫu duyệt trước khi code nằm ở
+  `design/template/giao-dien.html` (mở bằng trình duyệt, có nút đổi sáng/tối).
+  - `tailwind.config.ts`: mọi màu thành `rgb(var(--x) / <alpha-value>)`. Giữ nguyên tên 6 token cũ nên không
+    trang nào phải sửa; thêm `surface` (nền thẻ và ô nhập) và `on-accent` (chữ trên nền jade/seal đặc — ở nền
+    tối jade và seal được làm sáng lên nên chữ trắng không đủ tương phản).
+  - `app/globals.css`: bảng sáng khai ở `:root`, bảng tối khai một lần vào các biến `--dark-*` rồi gán lại
+    trong cả `@media (prefers-color-scheme: dark)` và `:root[data-theme="dark"]` — nhờ vậy giá trị chỉ viết
+    một chỗ mà cả "theo máy" lẫn "người dùng tự chọn" đều chạy, và lựa chọn sáng thắng được máy đang để tối.
+  - `components/AppShell.tsx`: cột trái cố định từ khổ `lg`; khổ điện thoại dùng thanh trên đỉnh, cộng thanh
+    tab dưới đáy khi có từ 2 mục trở lên (khu học viên hiện 1 mục nên chưa hiện — P1-02 và P2-04 thêm mục thì
+    tự có). `components/NavLinks.tsx` nhận `variant: 'sidebar' | 'tabbar'`, icon khai theo tên trong layout.
+  - `components/ThemeToggle.tsx` mới; `app/layout.tsx` chạy một script nhỏ trước khi vẽ để không nháy trắng,
+    và đặt `themeColor` theo từng chế độ.
+  - Dọn nốt màu hardcode không đổi theo theme: `bg-white` trong `Tianzige`, `text-white` trong `AudioRecorder`,
+    `bg-white` ở một thẻ trong trang bài giảng học viên, và `bg-amber-*` của `.tag-submitted`.
+  - `CLAUDE.md`: mục "Giao diện" viết lại cho khớp — liệt kê 8 token, cấm `bg-white`/hex/màu Tailwind có sẵn,
+    nói rõ chế độ tối bật bằng `data-theme` và phải xem lại cả hai chế độ.
+  - Kiểm tra: 29 unit + 40 pgTAP + 14 e2e pass, `npm run build` pass. Đo ở 375px cả sáng lẫn tối: không trang
+    nào tràn ngang.
+    _Ghi chú cho task sau:_ vẫn còn 4–6 vùng bấm cao dưới 40px ở mỗi trang — để P1-10 xử lý.
+    Khi viết test e2e, tên người dùng và nút đăng xuất có **hai** bản trong DOM (cột trái và thanh trên đỉnh);
+    `getByRole` tự lọc bản đang ẩn nhưng `getByText` thì không, phải chỉ rõ vùng.
+    Chưa có trang nào dùng `dark:` — nếu cần thì biến thể đã cấu hình sẵn là `&:where([data-theme="dark"] *)`.

@@ -2,7 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================================================================
+   Token màu
+   Bảng sáng là bản gốc; chế độ tối chỉ định nghĩa lại giá trị, không
+   định nghĩa lại component. Giá trị ghi dạng ba số kênh RGB để
+   `rgb(var(--x) / <alpha-value>)` trong tailwind.config.ts dùng được.
+
+   Thứ tự ưu tiên:
+   1. :root                      — nền sáng, luôn có đủ mọi token
+   2. prefers-color-scheme: dark — máy để tối mà người dùng chưa chọn gì
+   3. [data-theme]               — người dùng tự chọn, thắng cả hai trên
+   =================================================================== */
 @layer base {
+  :root {
+    --paper: 244 246 244;
+    --surface: 255 255 255;
+    --ink: 27 33 39;
+    --muted: 106 114 120;
+    --line: 222 227 221;
+    --jade: 47 107 91;
+    --jade-soft: 227 238 233;
+    --jade-strong: 35 82 63;
+    --seal: 184 50 42;
+    --seal-soft: 247 228 225;
+    --on-accent: 255 255 255;
+    --shadow-card: 0 1px 2px rgb(27 33 39 / 0.05), 0 1px 3px rgb(27 33 39 / 0.04);
+    color-scheme: light;
+  }
+
+  /* Nền tối. Jade và seal được làm sáng lên: màu gốc quá tối để đọc trên
+     nền đen, và chữ đặt trên chúng đổi sang gần đen qua --on-accent. */
+  :root[data-theme='dark'],
+  :root:not([data-theme='light']) {
+    --dark-paper: 17 21 26;
+    --dark-surface: 24 29 36;
+    --dark-ink: 230 234 231;
+    --dark-muted: 147 157 164;
+    --dark-line: 40 48 58;
+    --dark-jade: 78 169 141;
+    --dark-jade-soft: 21 48 41;
+    --dark-jade-strong: 124 200 173;
+    --dark-seal: 232 115 106;
+    --dark-seal-soft: 54 28 26;
+    --dark-on-accent: 17 21 26;
+    --dark-shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --paper: var(--dark-paper);
+      --surface: var(--dark-surface);
+      --ink: var(--dark-ink);
+      --muted: var(--dark-muted);
+      --line: var(--dark-line);
+      --jade: var(--dark-jade);
+      --jade-soft: var(--dark-jade-soft);
+      --jade-strong: var(--dark-jade-strong);
+      --seal: var(--dark-seal);
+      --seal-soft: var(--dark-seal-soft);
+      --on-accent: var(--dark-on-accent);
+      --shadow-card: var(--dark-shadow-card);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --paper: var(--dark-paper);
+    --surface: var(--dark-surface);
+    --ink: var(--dark-ink);
+    --muted: var(--dark-muted);
+    --line: var(--dark-line);
+    --jade: var(--dark-jade);
+    --jade-soft: var(--dark-jade-soft);
+    --jade-strong: var(--dark-jade-strong);
+    --seal: var(--dark-seal);
+    --seal-soft: var(--dark-seal-soft);
+    --on-accent: var(--dark-on-accent);
+    --shadow-card: var(--dark-shadow-card);
+    color-scheme: dark;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
   }
@@ -30,20 +109,20 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-jade text-white hover:bg-jade-dark;
+    @apply btn bg-jade text-on-accent hover:bg-jade-dark;
   }
   .btn-ghost {
-    @apply btn border border-line bg-white text-ink hover:border-muted;
+    @apply btn border border-line bg-surface text-ink hover:border-muted;
   }
   .btn-danger {
     @apply btn px-2 text-seal hover:bg-seal-soft;
   }
 
   .field {
-    @apply block w-full rounded-md border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-jade focus:outline-none focus:ring-2 focus:ring-jade/20;
+    @apply block w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-jade focus:outline-none focus:ring-2 focus:ring-jade/20;
   }
   .label {
     @apply mb-1 block text-sm font-medium;
@@ -53,30 +132,35 @@
   }
 
   .panel {
-    @apply rounded-lg border border-line bg-white p-5;
+    @apply rounded-xl border border-line bg-surface p-5 shadow-card;
   }
   .rows {
-    @apply divide-y divide-line rounded-lg border border-line bg-white;
+    @apply divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface shadow-card;
   }
 
   /* Mực đỏ của giáo viên: mọi nhận xét chữa bài dùng chung kiểu này */
   .red-ink {
-    @apply border-l-2 border-seal bg-seal-soft/60 px-3 py-2 text-sm text-seal;
+    @apply rounded-r-lg border-l-2 border-seal bg-seal-soft/60 px-3 py-2 text-sm text-seal;
   }
 
   .tag {
-    @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold;
   }
   .tag-draft {
-    @apply tag bg-paper text-muted;
+    @apply tag border border-line bg-paper text-muted;
   }
   .tag-submitted {
-    @apply tag bg-amber-50 text-amber-800;
+    @apply tag bg-jade-soft text-jade-dark;
   }
   .tag-graded {
-    @apply tag bg-jade-soft text-jade-dark;
+    @apply tag bg-jade text-on-accent;
   }
   .tag-late {
     @apply tag bg-seal-soft text-seal;
+  }
+
+  /* Thanh tab dưới đáy trên điện thoại phải chừa vạch home của iPhone. */
+  .safe-bottom {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
   }
 }

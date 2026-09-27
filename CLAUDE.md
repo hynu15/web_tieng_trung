@@ -54,12 +54,25 @@ npx supabase gen types typescript --local > lib/database.types.ts
 
 **Giao diện**
 
-- Chỉ dùng token trong `tailwind.config.ts` (`paper, ink, muted, line, jade, seal`) và class trong `app/globals.css` (`btn-*`, `field`, `panel`, `rows`, `red-ink`, `tag-*`). Không viết mã màu hex trong component.
+- Màu chỉ được lấy từ token trong `tailwind.config.ts`: `paper` (nền trang), `surface` (nền thẻ và ô nhập),
+  `ink`, `muted`, `line`, `jade` (+`soft`, +`dark`), `seal` (+`soft`), `on-accent` (chữ đặt trên nền jade
+  hoặc seal đặc). Mỗi token là một biến CSS khai trong `app/globals.css`, đổi giá trị theo chế độ sáng/tối.
+- **Không bao giờ** viết `bg-white`, `text-white`, `bg-black`, hay màu hex, hay màu có sẵn của Tailwind
+  (`gray-*`, `amber-*`…) trong component. Những màu đó không đổi theo theme và sẽ thành mảng trắng chói ở
+  nền tối. Cần nền thẻ thì dùng `bg-surface`; cần chữ trên nút jade thì dùng `text-on-accent`.
+- Dùng class dựng sẵn trong `app/globals.css`: `btn-*`, `field`, `label`, `hint`, `panel`, `rows`, `red-ink`,
+  `tag-*`, `safe-bottom`. Thêm kiểu mới thì thêm vào đó chứ đừng rắc class dài trong từng trang.
+- Chế độ tối bật bằng thuộc tính `data-theme="dark"` trên thẻ `html`, không phải bằng class `dark`.
+  Mặc định theo cài đặt máy; `components/ThemeToggle.tsx` cho người dùng tự chọn và nhớ trong `localStorage`.
+  Sửa giao diện xong phải xem lại **cả hai chế độ**.
 - Đỏ `seal` chỉ dành cho lời chữa của giáo viên, lỗi, quá hạn. Thao tác chính dùng `jade`.
 - Chữ Hán: `font-hanzi` và `lang="zh-CN"`. Ô 田字格 dùng `components/Tianzige.tsx`.
+- Khung trang nằm ở `components/AppShell.tsx`: cột trái từ khổ `lg` trở lên, thanh trên đỉnh và thanh tab
+  dưới đáy ở khổ điện thoại. Thêm mục điều hướng thì khai trong `layout.tsx` của khu, kèm `icon` khai trong
+  `components/NavLinks.tsx`.
 - Mobile trước: kiểm tra ở 375px. Học viên chủ yếu dùng điện thoại.
-- Chữ trên giao diện bằng tiếng Việt, viết hoa đầu câu, nút ghi rõ hành động ("Nộp bài", "Trả bài cho học viên"). Thông báo lỗi nói điều gì xảy ra và cách sửa.
-- Nếu có template UI trong `design/template/`, làm theo task P0-06 trước khi dựng màn hình mới.
+- Chữ trên giao diện bằng tiếng Việt, viết hoa đầu câu, nút ghi rõ hành động ("Nộp bài", "Trả bài cho học viên").
+  Thông báo lỗi nói điều gì xảy ra và cách sửa.
 
 ## Quy trình làm một task
 

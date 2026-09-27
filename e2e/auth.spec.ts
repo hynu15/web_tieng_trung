@@ -33,7 +33,9 @@ test('giáo viên vào khu học viên thì bị chuyển về khu giáo viên',
 
 test('đăng nhập bằng tài khoản mẫu rồi đăng xuất', async ({ page }) => {
   await dangNhap(page, TAI_KHOAN.hocVien1);
-  await expect(page.getByText('Nguyễn Minh An')).toBeVisible();
+  // Tên hiện ở cột trái trên khổ máy tính; thanh trên đỉnh có bản sao dành cho
+  // điện thoại, nên phải chỉ rõ đang xét cái nào.
+  await expect(page.getByRole('complementary').getByText('Nguyễn Minh An')).toBeVisible();
 
   await page.getByRole('button', { name: 'Đăng xuất' }).click();
   await expect(page).toHaveURL(/\/login/);

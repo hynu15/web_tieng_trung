@@ -75,7 +75,7 @@ export default async function LessonView({ params }: { params: Promise<{ id: str
           <h2>Từ vựng ({lesson.vocab.length})</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {lesson.vocab.map((v) => (
-              <li key={v.id} className="flex gap-4 rounded-lg border border-line bg-white p-4">
+              <li key={v.id} className="flex gap-4 rounded-xl border border-line bg-surface p-4">
                 <HanziWord text={v.hanzi} size={56} />
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="text-lg font-medium">{v.pinyin}</p>

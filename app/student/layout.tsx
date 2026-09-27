@@ -7,7 +7,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
     <AppShell
       name={profile.full_name}
       roleLabel="Học viên"
-      links={[{ href: '/student', label: 'Lớp học' }]}
+      links={[{ href: '/student', label: 'Lớp học', icon: 'lop-hoc' }]}
     >
       {children}
     </AppShell>

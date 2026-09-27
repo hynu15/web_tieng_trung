@@ -59,7 +59,11 @@ export function AudioRecorder({ name, label = 'Ghi âm' }: { name: string; label
       <input ref={inputRef} type="file" name={name} accept="audio/*" className="hidden" />
       <div className="flex flex-wrap items-center gap-3">
         {state === 'recording' ? (
-          <button type="button" onClick={stop} className="btn bg-seal text-white hover:bg-seal/90">
+          <button
+            type="button"
+            onClick={stop}
+            className="btn bg-seal text-on-accent hover:bg-seal/90"
+          >
             ■ Dừng · {seconds}s
           </button>
         ) : (

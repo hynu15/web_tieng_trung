@@ -1,0 +1,1206 @@
+<title>Lớp Hán ngữ — Bản mẫu giao diện</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&display=swap"
+/>
+<style>
+  /* ───────────────────────── Token: bảng sáng là bản gốc ───────────────────── */
+  :root {
+    --paper: 244 246 244;
+    --surface: 255 255 255;
+    --ink: 27 33 39;
+    --muted: 106 114 120;
+    --line: 222 227 221;
+    --jade: 47 107 91;
+    --jade-soft: 227 238 233;
+    --jade-strong: 35 82 63;
+    --seal: 184 50 42;
+    --seal-soft: 247 228 225;
+    --ring: 47 107 91;
+    --shadow: 0 1px 2px rgb(27 33 39 / 0.05), 0 1px 3px rgb(27 33 39 / 0.04);
+    --shadow-lift: 0 4px 12px rgb(27 33 39 / 0.08);
+  }
+  /* Máy để chế độ tối mà người xem chưa chọn gì */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --paper: 17 21 26;
+      --surface: 24 29 36;
+      --ink: 230 234 231;
+      --muted: 147 157 164;
+      --line: 40 48 58;
+      --jade: 78 169 141;
+      --jade-soft: 21 48 41;
+      --jade-strong: 124 200 173;
+      --seal: 232 115 106;
+      --seal-soft: 54 28 26;
+      --ring: 78 169 141;
+      --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
+      --shadow-lift: 0 4px 14px rgb(0 0 0 / 0.45);
+    }
+  }
+  /* Người xem bấm nút chọn tối */
+  :root[data-theme='dark'] {
+    --paper: 17 21 26;
+    --surface: 24 29 36;
+    --ink: 230 234 231;
+    --muted: 147 157 164;
+    --line: 40 48 58;
+    --jade: 78 169 141;
+    --jade-soft: 21 48 41;
+    --jade-strong: 124 200 173;
+    --seal: 232 115 106;
+    --seal-soft: 54 28 26;
+    --ring: 78 169 141;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
+    --shadow-lift: 0 4px 14px rgb(0 0 0 / 0.45);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding-block: 0 56px;
+    padding-inline: 16px;
+    background: rgb(var(--paper));
+    color: rgb(var(--ink));
+    font-family:
+      'Be Vietnam Pro',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .hanzi {
+    font-family: 'Noto Serif SC', 'Songti SC', serif;
+  }
+  .wrap {
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  p {
+    margin: 0;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* ───────────────────────── Vỏ trang mẫu ───────────────────────── */
+  .topbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-block: 14px;
+    margin-bottom: 28px;
+    background: rgb(var(--paper));
+    border-bottom: 1px solid rgb(var(--line));
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+  .seal-mark {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    background: rgb(var(--seal));
+    color: #fff;
+    border-radius: 7px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px;
+    line-height: 1;
+  }
+  .spacer {
+    margin-left: auto;
+  }
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    padding: 7px 13px;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: 1px solid rgb(var(--line));
+    background: rgb(var(--surface));
+    color: rgb(var(--ink));
+  }
+  .toggle:hover {
+    border-color: rgb(var(--muted));
+  }
+
+  section {
+    margin-bottom: 44px;
+  }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgb(var(--jade-strong));
+  }
+  .lede {
+    color: rgb(var(--muted));
+    max-width: 64ch;
+    margin-bottom: 18px;
+  }
+
+  /* ───────────────────────── Bảng màu ───────────────────────── */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .sw {
+    border: 1px solid rgb(var(--line));
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--surface));
+  }
+  .sw .chip {
+    height: 54px;
+  }
+  .sw .meta {
+    padding: 9px 11px;
+    font-size: 0.78rem;
+  }
+  .sw .nm {
+    font-weight: 600;
+  }
+  .sw .use {
+    color: rgb(var(--muted));
+    font-size: 0.72rem;
+  }
+
+  /* ───────────────────────── Thành phần ───────────────────────── */
+  .panel {
+    background: rgb(var(--surface));
+    border: 1px solid rgb(var(--line));
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font: inherit;
+    font-size: 0.87rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
+  }
+  .btn-primary {
+    background: rgb(var(--jade));
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: rgb(var(--jade-strong));
+  }
+  :root[data-theme='dark'] .btn-primary {
+    color: rgb(17 21 26);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .btn-primary {
+      color: rgb(17 21 26);
+    }
+  }
+  .btn-ghost {
+    background: rgb(var(--surface));
+    border-color: rgb(var(--line));
+    color: rgb(var(--ink));
+  }
+  .btn-ghost:hover {
+    border-color: rgb(var(--muted));
+  }
+  .btn-danger {
+    background: transparent;
+    color: rgb(var(--seal));
+    padding-inline: 10px;
+  }
+  .btn-danger:hover {
+    background: rgb(var(--seal-soft));
+  }
+  .field {
+    display: block;
+    width: 100%;
+    border-radius: 9px;
+    padding: 9px 12px;
+    font: inherit;
+    font-size: 0.9rem;
+    background: rgb(var(--surface));
+    border: 1px solid rgb(var(--line));
+    color: rgb(var(--ink));
+  }
+  .field::placeholder {
+    color: rgb(var(--muted) / 0.8);
+  }
+  .field:focus {
+    outline: none;
+    border-color: rgb(var(--jade));
+    box-shadow: 0 0 0 3px rgb(var(--jade) / 0.18);
+  }
+  .label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .hint {
+    font-size: 0.74rem;
+    color: rgb(var(--muted));
+    margin-top: 5px;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .tag-draft {
+    background: rgb(var(--paper));
+    color: rgb(var(--muted));
+    border: 1px solid rgb(var(--line));
+  }
+  .tag-submitted {
+    background: rgb(var(--jade-soft));
+    color: rgb(var(--jade-strong));
+  }
+  .tag-graded {
+    background: rgb(var(--jade));
+    color: #fff;
+  }
+  :root[data-theme='dark'] .tag-graded {
+    color: rgb(17 21 26);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .tag-graded {
+      color: rgb(17 21 26);
+    }
+  }
+  .tag-late {
+    background: rgb(var(--seal-soft));
+    color: rgb(var(--seal));
+  }
+  .red-ink {
+    border-left: 2px solid rgb(var(--seal));
+    background: rgb(var(--seal-soft) / 0.6);
+    padding: 9px 12px;
+    font-size: 0.87rem;
+    color: rgb(var(--seal));
+    border-radius: 0 7px 7px 0;
+  }
+  .rows {
+    background: rgb(var(--surface));
+    border: 1px solid rgb(var(--line));
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .rows > * + * {
+    border-top: 1px solid rgb(var(--line));
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+  }
+  .row:hover {
+    background: rgb(var(--paper));
+  }
+  .specimen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  /* 田字格 */
+  .tian {
+    width: 66px;
+    height: 66px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(var(--seal) / 0.45);
+    border-radius: 4px;
+    position: relative;
+    background: rgb(var(--surface));
+    font-family: 'Noto Serif SC', serif;
+    font-size: 38px;
+    line-height: 1;
+    color: rgb(var(--ink));
+  }
+  .tian::before,
+  .tian::after {
+    content: '';
+    position: absolute;
+    background: rgb(var(--seal) / 0.28);
+  }
+  .tian::before {
+    left: 50%;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+  }
+  .tian::after {
+    top: 50%;
+    left: 4px;
+    right: 4px;
+    height: 1px;
+  }
+
+  /* ───────────────────────── Khung máy tính ───────────────────────── */
+  .frame {
+    border: 1px solid rgb(var(--line));
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgb(var(--paper));
+    box-shadow: var(--shadow-lift);
+  }
+  .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 13px;
+    background: rgb(var(--surface));
+    border-bottom: 1px solid rgb(var(--line));
+  }
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgb(var(--line));
+  }
+  .frame-url {
+    margin-left: 10px;
+    font-size: 0.72rem;
+    color: rgb(var(--muted));
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 410px;
+  }
+  .side {
+    background: rgb(var(--surface));
+    border-right: 1px solid rgb(var(--line));
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .side .brand {
+    padding: 4px 8px 14px;
+    font-size: 0.92rem;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 11px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: rgb(var(--muted));
+    text-decoration: none;
+  }
+  .nav:hover {
+    background: rgb(var(--paper));
+    color: rgb(var(--ink));
+  }
+  .nav.on {
+    background: rgb(var(--jade-soft));
+    color: rgb(var(--jade-strong));
+    font-weight: 600;
+  }
+  .nav .ic {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+  .side-foot {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid rgb(var(--line));
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.78rem;
+  }
+  .avatar {
+    width: 27px;
+    height: 27px;
+    flex: none;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgb(var(--jade-soft));
+    color: rgb(var(--jade-strong));
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .main {
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+    align-content: start;
+    overflow: hidden;
+  }
+  .page-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 820px) {
+    .app {
+      grid-template-columns: 1fr;
+    }
+    .side {
+      display: none;
+    }
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ───────────────────────── Khung điện thoại ───────────────────────── */
+  .phones {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 280px;
+    flex: none;
+    border: 1px solid rgb(var(--line));
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgb(var(--paper));
+    box-shadow: var(--shadow-lift);
+    display: flex;
+    flex-direction: column;
+    height: 520px;
+  }
+  .phone-top {
+    padding: 11px 15px 9px;
+    background: rgb(var(--surface));
+    border-bottom: 1px solid rgb(var(--line));
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .phone-body {
+    padding: 15px;
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    overflow: hidden;
+    flex: 1;
+  }
+  .tabbar {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgb(var(--surface));
+    border-top: 1px solid rgb(var(--line));
+    padding: 7px 4px calc(7px + env(safe-area-inset-bottom, 0px));
+  }
+  .tab {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: 6px 2px;
+    border-radius: 9px;
+    font-size: 0.66rem;
+    color: rgb(var(--muted));
+    text-decoration: none;
+  }
+  .tab.on {
+    color: rgb(var(--jade-strong));
+    font-weight: 600;
+  }
+  .tab .ic {
+    width: 19px;
+    height: 19px;
+  }
+  .phone-cap {
+    font-size: 0.78rem;
+    color: rgb(var(--muted));
+    margin-top: 9px;
+    text-align: center;
+  }
+
+  .muted {
+    color: rgb(var(--muted));
+  }
+  .small {
+    font-size: 0.8rem;
+  }
+  .xs {
+    font-size: 0.72rem;
+  }
+  .big-score {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(var(--seal));
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  table.cmp th,
+  table.cmp td {
+    text-align: left;
+    padding: 9px 11px;
+    border-bottom: 1px solid rgb(var(--line));
+    vertical-align: top;
+  }
+  table.cmp th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgb(var(--muted));
+    font-weight: 600;
+  }
+  table.cmp td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .scroll-x {
+    overflow-x: auto;
+  }
+</style>
+
+<div class="wrap">
+  <header class="topbar">
+    <span class="brand"><span class="seal-mark hanzi">汉</span> Lớp Hán ngữ</span>
+    <span class="xs muted">Bản mẫu giao diện · P0-06</span>
+    <span class="spacer"></span>
+    <button class="toggle" id="nutTheme" type="button" aria-live="polite">
+      <span id="nhanTheme">Chuyển sang nền tối</span>
+    </button>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Đề xuất</span>
+      <h1>Giao diện lớp học, hai chế độ sáng và tối</h1>
+    </div>
+    <p class="lede">
+      Bấm nút góc trên để xem chế độ còn lại. Mọi thứ trên trang này — kể cả các màn hình mẫu phía
+      dưới — đều đổi màu bằng đúng bộ token sẽ đưa vào <code>tailwind.config.ts</code>, nên cái bạn
+      thấy ở đây là cái app sẽ ra.
+    </p>
+  </section>
+
+  <!-- ══════════════════ 1. Màu ══════════════════ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">01</span>
+      <h2>Bảng màu</h2>
+    </div>
+    <p class="lede">
+      Bảy token. Sáu cái đầu giữ nguyên tên đang dùng trong code nên mọi trang tự nhận giao diện
+      mới.
+      <strong>surface</strong> là token phải thêm: hiện <code>globals.css</code> ghi thẳng
+      <code>bg-white</code> cho panel và ô nhập, ở nền tối sẽ thành mảng trắng chói.
+    </p>
+    <div class="swatches">
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--paper))"></div>
+        <div class="meta">
+          <div class="nm">paper</div>
+          <div class="use">Nền trang</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--surface))"></div>
+        <div class="meta">
+          <div class="nm">
+            surface <span class="xs" style="color: rgb(var(--jade-strong))">mới</span>
+          </div>
+          <div class="use">Nền thẻ, ô nhập</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--ink))"></div>
+        <div class="meta">
+          <div class="nm">ink</div>
+          <div class="use">Chữ chính</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--muted))"></div>
+        <div class="meta">
+          <div class="nm">muted</div>
+          <div class="use">Chữ phụ</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--line))"></div>
+        <div class="meta">
+          <div class="nm">line</div>
+          <div class="use">Viền, kẻ ô</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--jade))"></div>
+        <div class="meta">
+          <div class="nm">jade</div>
+          <div class="use">Thao tác chính</div>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: rgb(var(--seal))"></div>
+        <div class="meta">
+          <div class="nm">seal</div>
+          <div class="use">Lời chữa, lỗi, quá hạn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ 2. Khung trang ══════════════════ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">02</span>
+      <h2>Khung trang trên máy tính</h2>
+    </div>
+    <p class="lede">
+      Đổi thanh điều hướng ngang hiện tại thành cột trái cố định, giống Google Classroom và Moodle:
+      tên mục đọc được ngay, thêm mục mới không bị chật, và mục đang mở nhìn là biết.
+    </p>
+
+    <div class="frame">
+      <div class="frame-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="frame-url">lophannggu.vn/teacher</span>
+      </div>
+      <div class="app">
+        <aside class="side">
+          <span class="brand"><span class="seal-mark hanzi">汉</span> Lớp Hán ngữ</span>
+          <a class="nav on" href="#"
+            ><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            Tổng quan</a
+          >
+          <a class="nav" href="#"
+            ><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 5h16v14H4z" />
+              <path d="M4 9h16" />
+            </svg>
+            Bài giảng</a
+          >
+          <a class="nav" href="#"
+            ><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 4h9v16H6V7z" />
+              <path d="M9 12h6M9 16h4" />
+            </svg>
+            Bài tập</a
+          >
+          <a class="nav" href="#"
+            ><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="8" r="3" />
+              <path d="M3 20c0-3 3-5 6-5s6 2 6 5" />
+              <path d="M17 11h4M19 9v4" />
+            </svg>
+            Học viên</a
+          >
+          <div class="side-foot">
+            <span class="avatar">CL</span>
+            <span
+              ><strong style="display: block">Cô Lan</strong
+              ><span class="muted xs">Giáo viên</span></span
+            >
+          </div>
+        </aside>
+
+        <main class="main">
+          <div class="page-title">
+            <h2>Bài chờ chấm</h2>
+            <span class="muted small">2 bài, nộp sớm nhất ở trên</span>
+          </div>
+          <div class="rows">
+            <div class="row">
+              <span class="avatar">MA</span>
+              <span style="flex: 1; min-width: 0">
+                <strong style="display: block">Nguyễn Minh An</strong>
+                <span class="muted xs">Bài tập 1 — Chào hỏi</span>
+              </span>
+              <span class="tag tag-submitted">Chờ chấm</span>
+              <span class="muted xs">00:37 · 28/09</span>
+            </div>
+            <div class="row">
+              <span class="avatar">TH</span>
+              <span style="flex: 1; min-width: 0">
+                <strong style="display: block">Trần Thu Hà</strong>
+                <span class="muted xs">Bài tập 1 — Chào hỏi</span>
+              </span>
+              <span class="tag tag-late">Nộp trễ</span>
+              <span class="muted xs">08:12 · 28/09</span>
+            </div>
+          </div>
+
+          <div class="cols">
+            <div class="panel stack">
+              <h3>Lớp của bạn</h3>
+              <div>
+                <strong>HSK 1 — Lớp tối thứ 3, 5</strong>
+                <div class="muted small">3 học viên · Mã vào lớp <code>DEMO01</code></div>
+              </div>
+              <div class="specimen">
+                <button class="btn btn-primary">Giao bài tập</button>
+                <button class="btn btn-ghost">Thêm bài giảng</button>
+              </div>
+            </div>
+            <div class="panel stack">
+              <h3>Từ vựng bài 1</h3>
+              <div class="specimen">
+                <span class="tian hanzi" lang="zh-CN">你</span>
+                <span class="tian hanzi" lang="zh-CN">好</span>
+                <span class="tian hanzi" lang="zh-CN">学</span>
+              </div>
+              <p class="muted xs">Ô 田字格 giữ nguyên nét kẻ đỏ nhạt như hiện tại.</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ 3. Điện thoại ══════════════════ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">03</span>
+      <h2>Trên điện thoại, ở bề ngang 375px</h2>
+    </div>
+    <p class="lede">
+      Học viên chủ yếu dùng điện thoại, nên cột trái đổi thành thanh tab dưới đáy — ngón cái với tới
+      được, không phải với lên góc trên. Ba màn hình học viên gặp nhiều nhất:
+    </p>
+
+    <div class="phones">
+      <!-- Lớp học -->
+      <div>
+        <div class="phone">
+          <div class="phone-top">
+            <span class="seal-mark hanzi" style="width: 24px; height: 24px; font-size: 14px"
+              >汉</span
+            >
+            <strong style="font-size: 0.88rem">Lớp học</strong>
+            <span class="spacer"></span
+            ><span class="avatar" style="width: 24px; height: 24px; font-size: 0.62rem">MA</span>
+          </div>
+          <div class="phone-body">
+            <div class="panel" style="padding: 13px">
+              <div class="xs muted">Hôm nay</div>
+              <strong style="font-size: 0.95rem">1 bài cần làm</strong>
+            </div>
+            <div class="rows">
+              <div class="row" style="padding: 11px 13px">
+                <span style="flex: 1; min-width: 0">
+                  <strong class="small" style="display: block">Bài tập 1 — Chào hỏi</strong>
+                  <span class="muted xs">Hạn 00:25 · 05/10</span>
+                </span>
+                <span class="tag tag-draft">Chưa nộp</span>
+              </div>
+              <div class="row" style="padding: 11px 13px">
+                <span style="flex: 1; min-width: 0">
+                  <strong class="small" style="display: block">Bài 1 — Chào hỏi</strong>
+                  <span class="hanzi muted xs" lang="zh-CN">你好、谢谢、老师</span>
+                </span>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%">Làm bài</button>
+          </div>
+          <nav class="tabbar">
+            <a class="tab on" href="#"
+              ><svg
+                class="ic"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 11l9-7 9 7" />
+                <path d="M5 10v9h14v-9" /></svg
+              >Lớp học</a
+            >
+            <a class="tab" href="#"
+              ><svg
+                class="ic"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 4h9v16H6V7z" />
+                <path d="M9 12h6" /></svg
+              >Bài tập</a
+            >
+            <a class="tab" href="#"
+              ><svg
+                class="ic"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20c0-3.5 3.4-6 7.5-6s7.5 2.5 7.5 6" /></svg
+              >Tài khoản</a
+            >
+          </nav>
+        </div>
+        <p class="phone-cap">Trang lớp học</p>
+      </div>
+
+      <!-- Làm bài -->
+      <div>
+        <div class="phone">
+          <div class="phone-top">
+            <span class="muted small">‹ Lớp học</span>
+          </div>
+          <div class="phone-body">
+            <div>
+              <strong style="font-size: 0.95rem; display: block">Bài tập 1 — Chào hỏi</strong>
+              <span class="muted xs">6 câu · 16 điểm · Hạn 05/10</span>
+            </div>
+            <div class="panel" style="padding: 13px; display: grid; gap: 9px">
+              <span class="muted xs">Câu 1 · Trắc nghiệm · 2 điểm</span>
+              <span class="small"
+                >「<span class="hanzi" lang="zh-CN">你好</span>」có nghĩa là gì?</span
+              >
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 9px;
+                  border: 1px solid rgb(var(--jade));
+                  background: rgb(var(--jade-soft));
+                  border-radius: 8px;
+                  padding: 8px 11px;
+                  font-size: 0.85rem;
+                "
+              >
+                <input type="radio" name="mc" checked style="accent-color: rgb(var(--jade))" /> Xin
+                chào
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 9px;
+                  border: 1px solid rgb(var(--line));
+                  border-radius: 8px;
+                  padding: 8px 11px;
+                  font-size: 0.85rem;
+                "
+              >
+                <input type="radio" name="mc" style="accent-color: rgb(var(--jade))" /> Cảm ơn
+              </label>
+            </div>
+            <div class="panel" style="padding: 13px; display: grid; gap: 8px">
+              <span class="muted xs">Câu 3 · Viết pinyin · 2 điểm</span>
+              <span class="small"
+                >Viết pinyin của <span class="hanzi" lang="zh-CN">再见</span></span
+              >
+              <input class="field" id="mau-pinyin" placeholder="nǐ hǎo hoặc ni3 hao3" />
+            </div>
+            <button class="btn btn-primary" style="width: 100%">Nộp bài</button>
+          </div>
+        </div>
+        <p class="phone-cap">Làm bài</p>
+      </div>
+
+      <!-- Bài đã chữa -->
+      <div>
+        <div class="phone">
+          <div class="phone-top"><span class="muted small">‹ Lớp học</span></div>
+          <div class="phone-body">
+            <div
+              class="panel"
+              style="padding: 13px; display: flex; align-items: baseline; gap: 10px"
+            >
+              <span class="big-score"
+                >7<span class="muted" style="font-size: 1rem; font-weight: 500">/16</span></span
+              >
+              <span class="muted xs">Giáo viên đã chấm</span>
+            </div>
+            <div class="red-ink">Em làm tốt, chú ý câu 1. Nghe lại ghi âm cô gửi nhé.</div>
+            <div class="panel" style="padding: 13px; display: grid; gap: 8px">
+              <div style="display: flex; justify-content: space-between" class="xs muted">
+                <span>Câu 4 · Tự luận</span><strong style="color: rgb(var(--ink))">3/4</strong>
+              </div>
+              <span class="hanzi small" lang="zh-CN">你好！我叫明安。我是学生。</span>
+              <div class="red-ink xs">Câu đúng ngữ pháp nhưng còn ngắn, viết thêm một câu nữa.</div>
+            </div>
+            <div class="panel" style="padding: 13px; display: grid; gap: 8px">
+              <div style="display: flex; justify-content: space-between" class="xs muted">
+                <span>Câu 5 · Viết tay</span><strong style="color: rgb(var(--ink))">3/3</strong>
+              </div>
+              <div class="specimen">
+                <span
+                  class="tian hanzi"
+                  lang="zh-CN"
+                  style="width: 52px; height: 52px; font-size: 30px"
+                  >学</span
+                >
+                <span
+                  class="tian hanzi"
+                  lang="zh-CN"
+                  style="width: 52px; height: 52px; font-size: 30px"
+                  >学</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="phone-cap">Bài đã chữa</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ 4. Thành phần ══════════════════ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">04</span>
+      <h2>Thành phần dùng lại</h2>
+    </div>
+    <p class="lede">
+      Tên class giữ nguyên hết, chỉ đổi phần định nghĩa trong <code>globals.css</code>. Các trang
+      hiện có không phải sửa một dòng nào.
+    </p>
+    <div class="cols">
+      <div class="panel stack">
+        <h3>Nút và ô nhập</h3>
+        <div class="specimen">
+          <button class="btn btn-primary">Nộp bài</button>
+          <button class="btn btn-ghost">Huỷ</button>
+          <button class="btn btn-danger">Xoá</button>
+        </div>
+        <div>
+          <label class="label" for="mau-ma-lop">Mã vào lớp</label>
+          <input
+            class="field"
+            id="mau-ma-lop"
+            value="DEMO01"
+            style="letter-spacing: 0.18em; text-transform: uppercase"
+          />
+          <p class="hint">Sáu ký tự giáo viên gửi cho bạn.</p>
+        </div>
+      </div>
+      <div class="panel stack">
+        <h3>Nhãn trạng thái và lời chữa</h3>
+        <div class="specimen">
+          <span class="tag tag-draft">Chưa nộp</span>
+          <span class="tag tag-submitted">Chờ chấm</span>
+          <span class="tag tag-graded">Đã chấm</span>
+          <span class="tag tag-late">Quá hạn</span>
+        </div>
+        <div class="red-ink">Chữ 好 viết thiếu một nét. Viết lại năm lần nhé.</div>
+        <p class="muted xs">
+          Đỏ <strong>seal</strong> chỉ dùng cho lời chữa của giáo viên, lỗi và quá hạn — không dùng
+          cho nút bấm thường.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ 5. Đối chiếu ══════════════════ -->
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">05</span>
+      <h2>Đổi những gì so với hiện tại</h2>
+    </div>
+    <div class="panel scroll-x">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>Hạng mục</th>
+            <th>Hiện tại</th>
+            <th>Đề xuất</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Định nghĩa màu</td>
+            <td>6 token, hex cố định trong <code>tailwind.config.ts</code></td>
+            <td>
+              Cùng 6 tên đó nhưng trỏ vào biến CSS, thêm <code>surface</code>. Đổi theme là đổi
+              biến.
+            </td>
+          </tr>
+          <tr>
+            <td>Nền thẻ và ô nhập</td>
+            <td><code>bg-white</code> ghi thẳng trong <code>globals.css</code></td>
+            <td><code>bg-surface</code> — điều kiện bắt buộc để có nền tối</td>
+          </tr>
+          <tr>
+            <td>Chế độ tối</td>
+            <td>Chưa có</td>
+            <td>
+              Theo máy, cộng nút tự chọn nhớ trong <code>localStorage</code>; không nháy trắng khi
+              tải
+            </td>
+          </tr>
+          <tr>
+            <td>Điều hướng máy tính</td>
+            <td>Thanh ngang trên đỉnh</td>
+            <td>Cột trái cố định, có icon, mục đang mở tô nền jade nhạt</td>
+          </tr>
+          <tr>
+            <td>Điều hướng điện thoại</td>
+            <td>Cùng thanh ngang, chữ nhỏ ở góc</td>
+            <td>Thanh tab dưới đáy, vùng bấm ≥ 44px, chừa safe-area iPhone</td>
+          </tr>
+          <tr>
+            <td>Bo góc</td>
+            <td>6px / 8px</td>
+            <td>9px nút và ô nhập, 12px thẻ — mềm hơn chút, vẫn gọn</td>
+          </tr>
+          <tr>
+            <td>Đổ bóng</td>
+            <td>Không có, chỉ viền</td>
+            <td>Bóng rất nhẹ cho thẻ để tách khỏi nền; nền tối thì bóng đậm hơn</td>
+          </tr>
+          <tr>
+            <td>Chữ</td>
+            <td>Be Vietnam Pro + Noto Serif SC</td>
+            <td>Giữ nguyên — dấu tiếng Việt tốt, chữ Hán đẹp</td>
+          </tr>
+          <tr>
+            <td>Màu jade / seal</td>
+            <td><code>#2F6B5B</code> / <code>#B8322A</code></td>
+            <td>
+              Giữ nguyên ở nền sáng; nền tối sáng lên thành <code>#4EA98D</code> /
+              <code>#E8736A</code> cho đủ tương phản
+            </td>
+          </tr>
+          <tr>
+            <td>File phải sửa</td>
+            <td>—</td>
+            <td>
+              <code>tailwind.config.ts</code>, <code>app/globals.css</code>,
+              <code>components/AppShell.tsx</code>, <code>components/NavLinks.tsx</code>, thêm
+              <code>components/ThemeToggle.tsx</code>. Không đụng trang nào.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="muted small">
+    Màn hình trong trang này dựng bằng HTML tĩnh để bạn xem trước. Duyệt xong tôi mới áp vào app
+    thật và chạy lại bộ test.
+  </p>
+</div>
+
+<script>
+  (function () {
+    var goc = document.documentElement,
+      nut = document.getElementById('nutTheme'),
+      nhan = document.getElementById('nhanTheme');
+    function dangToi() {
+      var d = goc.getAttribute('data-theme');
+      if (d) return d === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    function veNhan() {
+      nhan.textContent = dangToi() ? 'Chuyển sang nền sáng' : 'Chuyển sang nền tối';
+    }
+    try {
+      var luu = localStorage.getItem('mau-theme');
+      if (luu) goc.setAttribute('data-theme', luu);
+    } catch (e) {}
+    veNhan();
+    nut.addEventListener('click', function () {
+      var moi = dangToi() ? 'light' : 'dark';
+      goc.setAttribute('data-theme', moi);
+      try {
+        localStorage.setItem('mau-theme', moi);
+      } catch (e) {}
+      veNhan();
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', veNhan);
+  })();
+</script>

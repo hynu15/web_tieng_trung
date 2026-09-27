@@ -2,7 +2,7 @@
 export function Tianzige({ char, size = 64 }: { char: string; size?: number }) {
   return (
     <span
-      className="relative inline-grid shrink-0 place-items-center border border-seal/50 bg-white"
+      className="relative inline-grid shrink-0 place-items-center border border-seal/50 bg-surface"
       style={{ width: size, height: size }}
     >
       <svg

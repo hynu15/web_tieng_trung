@@ -8,10 +8,10 @@ export default async function TeacherLayout({ children }: { children: React.Reac
       name={profile.full_name}
       roleLabel="Giáo viên"
       links={[
-        { href: '/teacher', label: 'Tổng quan' },
-        { href: '/teacher/lessons', label: 'Bài giảng' },
-        { href: '/teacher/assignments', label: 'Bài tập' },
-        { href: '/teacher/students', label: 'Học viên' },
+        { href: '/teacher', label: 'Tổng quan', icon: 'tong-quan' },
+        { href: '/teacher/lessons', label: 'Bài giảng', icon: 'bai-giang' },
+        { href: '/teacher/assignments', label: 'Bài tập', icon: 'bai-tap' },
+        { href: '/teacher/students', label: 'Học viên', icon: 'hoc-vien' },
       ]}
     >
       {children}
