@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireRole } from '@/lib/auth';
-import { formatDate, isLate, isOverdue } from '@/lib/format';
+import { formatDate, isLate } from '@/lib/format';
 import { SubmitButton } from '@/components/SubmitButton';
 import { createClass } from './actions';
 

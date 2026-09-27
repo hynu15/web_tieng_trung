@@ -67,8 +67,10 @@ export default async function GradePage({ params }: { params: Promise<{ id: stri
                         <audio src={urls[ans.file_path]} controls className="w-full" />
                       )}
                       {ans.file_path && q.type !== 'speaking' && (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <a href={urls[ans.file_path]} target="_blank" rel="noreferrer">
+                          {/* Ảnh nằm trong Storage riêng tư, dùng link ký có hạn nên
+                              next/image không tối ưu được; dùng <img> là đúng. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={urls[ans.file_path]} alt="Bài viết tay của học viên" className="max-h-[480px] rounded border border-line" />
                         </a>
                       )}
