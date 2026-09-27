@@ -5,6 +5,10 @@ học viên xem bài, làm bài (kể cả viết tay và ghi âm), nhận lời
 
 Kế hoạch và danh sách task: `docs/PLAN.md`. Luôn đọc task tương ứng trước khi code.
 
+`report.md` mô tả kiến trúc, database, RLS, hệ thống giao diện, và nhật ký các lỗi đã gặp kèm
+nguyên nhân. Khi người dùng báo bug, đọc `report.md` trước thay vì đọc lại toàn bộ project.
+Làm xong việc gì đáng kể thì cập nhật `report.md` cho khớp.
+
 ## Lệnh
 
 ```bash

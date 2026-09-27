@@ -5,6 +5,9 @@ Next.js 15 (App Router, Server Actions) + Supabase (Auth, Postgres, Storage) + T
 
 ## Làm việc với Claude Code
 
+`report.md` giải thích toàn bộ kiến trúc và công nghệ của dự án — đọc file đó trước nếu bạn mới
+vào dự án hoặc đang đi tìm một con bug.
+
 `CLAUDE.md` chứa quy tắc dự án, `docs/PLAN.md` chứa danh sách task.
 Trong `claude`: `/next` để lấy task tiếp theo, `/task P1-03` để làm một task, `/verify` để kiểm tra trước khi push.
 
