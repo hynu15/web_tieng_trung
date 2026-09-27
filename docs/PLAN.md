@@ -39,7 +39,7 @@ Vấn đề đã biết (được xử lý trong các task bên dưới):
 
 | Mã | Task | Phụ thuộc | Xong |
 |----|------|-----------|------|
-| P0-01 | Supabase local + migrations + seed | — | [ ] |
+| P0-01 | Supabase local + migrations + seed | — | [x] |
 | P0-02 | Sinh kiểu database, bỏ `any` | P0-01 | [ ] |
 | P0-03 | ESLint, Prettier, script kiểm tra | — | [ ] |
 | P0-04 | Hạ tầng test: Vitest, pgTAP, Playwright | P0-01, P0-03 | [ ] |
@@ -369,3 +369,16 @@ _(Claude ghi vào đây ở task P0-06.)_
 
 ## Nhật ký
 _(Mỗi task xong thêm một dòng: ngày — mã task — tóm tắt — ghi chú cho task sau.)_
+
+- 2026-09-28 — P0-01 — Supabase local chạy được: `supabase/config.toml`, migration `20260101000000_init.sql`
+  (chuyển từ `schema.sql`, giữ nguyên phần `insert into storage.buckets` nên không khai báo bucket trong
+  config.toml — tránh hai nguồn sự thật cho `file_size_limit`), `supabase/seed.sql` (4 tài khoản, lớp `DEMO01`,
+  2 bài giảng, 5 từ vựng, 1 bài tập đủ 6 dạng câu hỏi + 3 đáp án, 1 thông báo). Thêm scripts `db:start/db:stop/
+  db:reset/db:types/test:db`. README có mục "Phát triển local"; mục cloud đổi từ "dán schema.sql" sang
+  `supabase link` + `db push`.
+  **Sửa kèm một lỗi có sẵn của MVP:** `app/student/page.tsx` embed `teacher:profiles(...)` bị PostgREST báo
+  nhập nhằng (PGRST201) vì có hai đường nối `classes`↔`profiles` (`classes.teacher_id` và bảng `class_members`);
+  query lỗi âm thầm nên mọi học viên đã vào lớp đều bị trang báo "Vào lớp đầu tiên của bạn". Đã chỉ rõ khoá
+  ngoại `profiles!classes_teacher_id_fkey`. Đã rà 4 query lồng nhau còn lại của giáo viên — không chỗ nào bị.
+  *Ghi chú cho task sau:* P0-04 nên có e2e chặn đúng lỗi này (học viên seed thấy 1 bài giảng + 1 bài tập);
+  khi viết select lồng nhau mới, luôn chỉ rõ khoá ngoại nếu hai bảng có nhiều hơn một quan hệ.

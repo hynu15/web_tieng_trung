@@ -24,7 +24,7 @@ export default async function StudentHome({ searchParams }: { searchParams: Prom
 
   const { data: memberships } = await supabase
     .from('class_members')
-    .select('class:classes(id, name, hsk_level, teacher:profiles(full_name))')
+    .select('class:classes(id, name, hsk_level, teacher:profiles!classes_teacher_id_fkey(full_name))')
     .eq('student_id', profile.id);
 
   if (!memberships?.length) {

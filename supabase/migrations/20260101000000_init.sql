@@ -1,11 +1,9 @@
 -- =====================================================================
--- Chỉ để tham khảo. Nguồn sự thật: supabase/migrations
---
--- Hanzi Class — schema cho Supabase (Postgres 15+)
--- File này giữ lại để đọc toàn bộ schema trong một lần. Đừng chạy nó và
--- đừng sửa nó: database được tạo bằng `npx supabase db reset`, đọc các
--- file trong supabase/migrations theo thứ tự tên.
+-- Hanzi Class — migration khởi tạo (nguồn sự thật của database)
+-- Sinh từ supabase/schema.sql tại task P0-01. Không sửa file này;
+-- mọi thay đổi schema về sau là một migration mới.
 -- =====================================================================
+
 
 create extension if not exists pgcrypto;
 

@@ -8,10 +8,63 @@ Next.js 15 (App Router, Server Actions) + Supabase (Auth, Postgres, Storage) + T
 `CLAUDE.md` chứa quy tắc dự án, `docs/PLAN.md` chứa danh sách task.
 Trong `claude`: `/next` để lấy task tiếp theo, `/task P1-03` để làm một task, `/verify` để kiểm tra trước khi push.
 
-## Chạy thử trong 15 phút
+## Phát triển local (cách được khuyến nghị)
+
+Toàn bộ database chạy trên máy bằng Supabase CLI, không cần tài khoản supabase.com.
+Cần **Docker** đang chạy và **Node.js 20+**.
+
+```bash
+npm install
+npx supabase start          # lần đầu tải image, mất vài phút
+npx supabase db reset       # chạy lại migrations + seed.sql
+```
+
+Chép `.env.example` thành `.env.local` rồi điền URL và anon key mà `npx supabase start` in ra
+(`API_URL` và `ANON_KEY`). Giá trị mặc định của Supabase local luôn giống nhau:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<ANON_KEY do supabase start in ra>
+```
+
+Rồi `npm run dev` và mở http://localhost:3000.
+
+**Tài khoản mẫu** (mật khẩu chung `Test12345!`, tạo bởi `supabase/seed.sql`):
+
+| Email | Vai trò | Có gì |
+|---|---|---|
+| `giaovien@test.local` | giáo viên | lớp `DEMO01`, 2 bài giảng, 1 bài tập |
+| `hv1@test.local` | học viên | đã trong lớp `DEMO01` |
+| `hv2@test.local` | học viên | đã trong lớp `DEMO01` |
+| `hv3@test.local` | học viên | đã trong lớp `DEMO01` |
+
+Học viên chỉ thấy bài giảng đã đăng (1 trong 2) và bài tập đã giao. Mã vào lớp là `DEMO01`.
+
+**Các cổng local**
+
+| Dịch vụ | Địa chỉ |
+|---|---|
+| API | http://127.0.0.1:54321 |
+| Studio (xem/sửa dữ liệu) | http://127.0.0.1:54323 |
+| Postgres | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
+| Mailpit (xem email gửi ra) | http://127.0.0.1:54324 |
+
+Xác nhận email đã tắt ở local (`enable_confirmations = false` trong `supabase/config.toml`),
+nên đăng ký xong là đăng nhập được ngay.
+
+**Đổi schema:** tạo file mới `supabase/migrations/<timestamp>_<ten>.sql`, không sửa migration đã có.
+Sau đó `npx supabase db reset`. `supabase/schema.sql` chỉ còn để đọc tham khảo.
+
+**Dừng lại:** `npx supabase stop` (thêm `--no-backup` nếu muốn xoá sạch dữ liệu).
+
+## Chạy trên Supabase cloud (khi cần bản thật)
 
 1. Tạo project miễn phí tại https://supabase.com.
-2. Vào **SQL Editor**, dán toàn bộ `supabase/schema.sql` và bấm Run.
+2. Đẩy schema lên bằng migration (đừng dán `schema.sql` bằng tay):
+   ```bash
+   npx supabase link --project-ref <project-ref>
+   npx supabase db push
+   ```
 3. Chép `.env.example` thành `.env.local`, điền URL và anon key (Project Settings → API).
 4. Chạy:
    ```bash
