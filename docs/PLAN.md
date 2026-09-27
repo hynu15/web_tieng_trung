@@ -484,3 +484,13 @@ db:reset/db:types/test:db`. README có mục "Phát triển local"; mục cloud 
     _Ghi chú cho task sau:_ các file e2e dùng chung một database và chạy tuần tự (`workers: 1`), nên đừng viết
     khẳng định kiểu "danh sách rỗng" — file khác có thể để lại dữ liệu. `e2e/fixtures/bai-viet-tay.png` là ảnh
     mẫu nhỏ; P1-03 cần thêm ảnh ~5 MB để test nén ảnh.
+
+- 2026-09-28 — P0-05 — `.github/workflows/ci.yml` đã viết xong, **nhưng ô tiến độ vẫn để trống** vì tiêu chí
+  hoàn thành là "workflow xanh trên một PR thử" mà repo chưa có remote GitHub (và máy chưa cài `gh`).
+  Workflow có 2 job: (1) `npm ci` → `npm run check` → `npm run build` với biến môi trường giả;
+  (2) `supabase/setup-cli` → `supabase start` → `supabase test db` → `playwright install --with-deps chromium`
+  → `npm run test:e2e`, kèm upload `playwright-report/` khi hỏng. Đã chạy tay đúng từng lệnh đó ở local và
+  tất cả pass; `npm ci --dry-run` xác nhận `package-lock.json` khớp `package.json`.
+  _Việc còn lại:_ tạo repo trên GitHub, `git remote add origin …`, đẩy một nhánh và mở PR thử, rồi tick `[x]`.
+  _Ghi chú:_ job e2e truyền `NEXT_PUBLIC_SUPABASE_*` ở bước chạy test chứ không qua `.env.local` (file đó
+  không nằm trong git); `playwright.config.ts` thấy biến `CI` thì tự khởi động dev server riêng thay vì dùng lại.
